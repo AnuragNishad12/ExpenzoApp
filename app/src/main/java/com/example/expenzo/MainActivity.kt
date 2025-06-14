@@ -149,41 +149,4 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-
-
-
-
-
-
-//    private fun extractAndDisplayUPIRefs() {
-//        circularProgressBar.visibility = View.VISIBLE
-//        circularProgressBar.setProgress(0f, animate = false)
-//        Thread {
-//            val smsHelper = SmsHelper(this)
-//            runOnUiThread { circularProgressBar.setProgress(50f, animate = true) }
-//
-//            val upiRefs: List<String> = smsHelper.getStructuredUPIData(7)
-//            runOnUiThread {
-//                circularProgressBar.setProgress(100f, animate = true)
-//                Handler(Looper.getMainLooper()).postDelayed({
-//                    circularProgressBar.visibility = View.GONE
-//                }, 2000)
-//                if (upiRefs.isNotEmpty()) {
-//                    upiRefTextView.text = upiRefs.joinToString("\n\n")
-//                } else {
-//                    upiRefTextView.text = "No UPI references found in SMS"
-//                }
-//            }
-//        }.start()
-//    }
-
-//    fun transaction(){
-//
-//        val transactiondata = TransactionDataModel
-//
-//
-//    }
-
-
 }
