@@ -12,6 +12,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 
 import android.widget.Toast
@@ -54,6 +55,8 @@ class MainActivity : AppCompatActivity() {
         circularProgressBar.setStrokeWidth(20f)
         circularProgressBar.visibility = View.GONE
 
+        setupObservers();
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
             != PackageManager.PERMISSION_GRANTED
@@ -91,35 +94,58 @@ class MainActivity : AppCompatActivity() {
             val smsHelper = SmsHelper(this)
 
             runOnUiThread {
-                circularProgressBar.setProgress(50f, animate = true)
+                circularProgressBar.setProgress(30f, animate = true)
             }
 
             val userId = "684bbadc62bc05d171ab1175"
-
             val transactionList = smsHelper.getStructuredUPIData(userId)
 
             runOnUiThread {
-                circularProgressBar.setProgress(100f, animate = true)
-
-                Handler(Looper.getMainLooper()).postDelayed({
-                    circularProgressBar.visibility = View.GONE
-                }, 2000)
+                circularProgressBar.setProgress(70f, animate = true)
 
                 if (transactionList.isNotEmpty()) {
                     upiRefTextView.text = "Found ${transactionList.size} UPI transactions"
 
+                    // Log the parsed data for debugging
+                    transactionList.forEach { transaction ->
+                        Log.d("TransactionData", "Parsed: $transaction")
+                    }
 
+                    circularProgressBar.setProgress(90f, animate = true)
+
+                    // Send each transaction to API
                     transactionList.forEach { transaction ->
                         viewModel.transactionDataClass(transaction)
                     }
 
+                    circularProgressBar.setProgress(100f, animate = true)
                 } else {
-                    upiRefTextView.text = "No UPI references found in SMS"
+                    upiRefTextView.text = "No UPI transactions found in SMS"
+                    circularProgressBar.setProgress(100f, animate = true)
                 }
+
+                Handler(Looper.getMainLooper()).postDelayed({
+                    circularProgressBar.visibility = View.GONE
+                }, 2000)
             }
         }.start()
     }
 
+    private fun setupObservers() {
+        viewModel.responseTransaction.observe(this) { response ->
+            response?.let {
+                Log.d("MainActivity", "API Success: ${it.message}")
+                Toast.makeText(this, "Transaction sent successfully", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        viewModel.errorResponse.observe(this) { error ->
+            error?.let {
+                Log.e("MainActivity", "API Error: $it")
+                Toast.makeText(this, "Error: $it", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
 
 
