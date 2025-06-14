@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="orange_primary">#FF6B35</color>
+    <color name="orange_secondary">#FF8C42</color>
+    <color name="orange_light">#FFAD5A</color>
+    <color name="orange_dark">#E55A2B</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#9E9E9E</color>
+
+    <!-- Background Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="background_light">#FAFAFA</color>
+    <color name="card_background">#FFFFFF</color>
+
+    <!-- Border and Divider Colors -->
+    <color name="divider_color">#E0E0E0</color>
+    <color name="border_light">#E8E8E8</color>
+    <color name="border_orange">#FF6B35</color>
+
+    <!-- Status Colors -->
+    <color name="green_success">#4CAF50</color>
+    <color name="red_error">#F44336</color>
+    <color name="facebook_blue">#1877F2</color>
+
+    <!-- Transparent Colors -->
+    <color name="black_overlay">#80000000</color>
+    <color name="white_overlay">#80FFFFFF</color>
+
+    <declare-styleable name="OrangeProgressBar">
+        <attr name="progressColor" format="color" />
+        <attr name="trackColor" format="color" />
+        <attr name="cornerRadius" format="dimension" />
+        <attr name="trackHeight" format="dimension" />
+    </declare-styleable>
+</resources>
