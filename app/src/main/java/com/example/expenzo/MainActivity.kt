@@ -21,6 +21,7 @@ import com.example.expenzo.Model.TransactionDataModel
 
 import com.example.expenzo.Utils.BeautifulCircularProgressBar
 import com.example.expenzo.Utils.SmsHelper
+import com.example.expenzo.Utils.StoredTransactionsHelper
 import com.example.expenzo.ViewModel.TrascationViewModel
 import com.example.expenzo.databinding.ActivityMainBinding
 
@@ -44,19 +45,14 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-
-
-
         upiRefTextView = findViewById(R.id.upiRefTextView)
         circularProgressBar = findViewById(R.id.circularProgressBar)
-
 
         circularProgressBar.setMaxProgress(100f)
         circularProgressBar.setStrokeWidth(20f)
         circularProgressBar.visibility = View.GONE
 
-        setupObservers();
-
+        setupObservers()
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
             != PackageManager.PERMISSION_GRANTED
@@ -91,42 +87,80 @@ class MainActivity : AppCompatActivity() {
         circularProgressBar.setProgress(0f, animate = false)
 
         Thread {
-            val smsHelper = SmsHelper(this)
+            try {
+                val smsHelper = SmsHelper(this)
+                val storedHelper = StoredTransactionsHelper(this)
 
-            runOnUiThread {
-                circularProgressBar.setProgress(30f, animate = true)
-            }
-
-            val userId = "684bbadc62bc05d171ab1175"
-            val transactionList = smsHelper.getStructuredUPIData(userId)
-
-            runOnUiThread {
-                circularProgressBar.setProgress(70f, animate = true)
-
-                if (transactionList.isNotEmpty()) {
-                    upiRefTextView.text = "Found ${transactionList.size} UPI transactions"
-
-                    // Log the parsed data for debugging
-                    transactionList.forEach { transaction ->
-                        Log.d("TransactionData", "Parsed: $transaction")
-                    }
-
-                    circularProgressBar.setProgress(90f, animate = true)
-
-                    // Send each transaction to API
-                    transactionList.forEach { transaction ->
-                        viewModel.transactionDataClass(transaction)
-                    }
-
-                    circularProgressBar.setProgress(100f, animate = true)
-                } else {
-                    upiRefTextView.text = "No UPI transactions found in SMS"
-                    circularProgressBar.setProgress(100f, animate = true)
+                runOnUiThread {
+                    circularProgressBar.setProgress(30f, animate = true)
                 }
 
-                Handler(Looper.getMainLooper()).postDelayed({
-                    circularProgressBar.visibility = View.GONE
-                }, 2000)
+                val userId = "684bbadc62bc05d171ab1175"
+                val allTransactions = smsHelper.getStructuredUPIData(userId)
+                Log.d("TransactionDebug", "Total transactions found: ${allTransactions.size}")
+
+                // Log all transactions for debugging
+                allTransactions.forEachIndexed { index, transaction ->
+                    Log.d("TransactionDebug", "Transaction $index: UPI Ref: ${transaction.upiRefId}, Amount: ${transaction.amount}, Receiver: ${transaction.receiver}")
+                }
+
+                // Filter only new transactions
+                val newTransactions = allTransactions.filter { transaction ->
+                    val isStored = storedHelper.isTransactionAlreadyStored(transaction.upiRefId)
+                    Log.d("TransactionFilter", "UPI Ref ID: ${transaction.upiRefId}, Stored: $isStored")
+                    !isStored
+                }
+                Log.d("TransactionDebug", "New transactions: ${newTransactions.size}")
+
+                runOnUiThread {
+                    if (!isFinishing) {
+                        circularProgressBar.setProgress(70f, animate = true)
+
+                        if (newTransactions.isNotEmpty()) {
+                            upiRefTextView.text = "Found ${newTransactions.size} new UPI transactions"
+
+                            // Process each new transaction
+                            newTransactions.forEach { transaction ->
+                                Log.d("TransactionData", "Processing New Transaction: $transaction")
+
+                                // Only send transactions with valid UPI reference IDs
+                                if (transaction.upiRefId != "Unknown" && transaction.upiRefId.isNotBlank()) {
+                                    viewModel.transactionDataClass(transaction)
+                                    storedHelper.markTransactionAsStored(transaction.upiRefId)
+                                    Log.d("TransactionData", "Sent transaction with UPI Ref: ${transaction.upiRefId}")
+                                } else {
+                                    Log.w("TransactionData", "Skipping transaction with invalid UPI Ref: ${transaction.upiRefId}")
+                                }
+                            }
+                            circularProgressBar.setProgress(100f, animate = true)
+                        } else {
+                            upiRefTextView.text = if (allTransactions.isEmpty()) {
+                                "No UPI transactions found in SMS"
+                            } else {
+                                "No new UPI transactions (${allTransactions.size} already processed)"
+                            }
+                            circularProgressBar.setProgress(100f, animate = true)
+                        }
+
+                        // Show stored transaction count for debugging
+                        val storedCount = storedHelper.getStoredTransactionCount()
+                        Log.d("TransactionDebug", "Total stored transactions: $storedCount")
+
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            if (!isFinishing) {
+                                circularProgressBar.visibility = View.GONE
+                            }
+                        }, 2000)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("ThreadError", "Error in extractAndSendUPIRefs: ${e.message}", e)
+                runOnUiThread {
+                    if (!isFinishing) {
+                        Toast.makeText(this, "Error processing SMS: ${e.message}", Toast.LENGTH_LONG).show()
+                        circularProgressBar.visibility = View.GONE
+                    }
+                }
             }
         }.start()
     }
@@ -146,7 +180,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
-
 }

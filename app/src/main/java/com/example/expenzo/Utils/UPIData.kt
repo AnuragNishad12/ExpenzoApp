@@ -41,11 +41,17 @@ class SmsHelper(private val context: Context) {
                 val message = it.getString(bodyIndex)
                 val dateMillis = it.getLong(dateIndex)
 
+                // Log the SMS message for debugging
+                Log.d("SmsHelper", "Processing SMS: $message")
+
                 // Check if message contains UPI keywords
                 if (isUPIMessage(message)) {
                     val upiData = parseUpiDataFromMessage(message, dateMillis, userId)
                     if (upiData != null) {
                         results.add(upiData)
+                        Log.d("SmsHelper", "Successfully parsed UPI data: $upiData")
+                    } else {
+                        Log.w("SmsHelper", "Failed to parse UPI data from message: $message")
                     }
                 }
             }
@@ -58,12 +64,16 @@ class SmsHelper(private val context: Context) {
         val upiKeywords = listOf(
             "UPI", "upi", "transaction", "debited", "credited",
             "sent", "received", "paid", "Rs.", "₹", "INR",
-            "UTR", "Ref", "Reference"
+            "UTR", "Ref", "Reference", "IMPS", "NEFT", "RTGS"
         )
         return upiKeywords.any { message.contains(it, ignoreCase = true) }
     }
 
-    private fun parseUpiDataFromMessage(message: String, dateMillis: Long, userId: String): TransactionDataModel? {
+    private fun parseUpiDataFromMessage(
+        message: String,
+        dateMillis: Long,
+        userId: String
+    ): TransactionDataModel? {
         return try {
             // Parse different UPI message formats
             val amount = extractAmount(message)
@@ -72,6 +82,12 @@ class SmsHelper(private val context: Context) {
             val account = extractAccount(message)
             val upiRefId = extractUPIRef(message)
             val date = formatDate(dateMillis)
+
+            // Log extracted data for debugging
+            Log.d(
+                "SmsHelper",
+                "Extracted - Amount: $amount, Receiver: $receiver, Bank: $bank, Account: $account, UPI Ref: $upiRefId"
+            )
 
             if (amount.isNotEmpty() && receiver.isNotEmpty()) {
                 TransactionDataModel(
@@ -84,6 +100,7 @@ class SmsHelper(private val context: Context) {
                     upiRefId = upiRefId
                 )
             } else {
+                Log.w("SmsHelper", "Missing required fields - Amount: $amount, Receiver: $receiver")
                 null
             }
         } catch (e: Exception) {
@@ -93,40 +110,54 @@ class SmsHelper(private val context: Context) {
     }
 
     private fun extractAmount(message: String): String {
-        // Pattern to match amounts like Rs.100, ₹100, INR 100, etc.
+        // Enhanced patterns to match amounts like Rs.100, ₹100, INR 100, etc.
         val patterns = listOf(
-            "Rs\\.?\\s*(\\d+(?:\\.\\d{2})?)",
-            "₹\\s*(\\d+(?:\\.\\d{2})?)",
-            "INR\\s*(\\d+(?:\\.\\d{2})?)",
-            "amount\\s+Rs\\.?\\s*(\\d+(?:\\.\\d{2})?)",
-            "amount\\s+₹\\s*(\\d+(?:\\.\\d{2})?)"
+            "Rs\\.?\\s*(\\d+(?:[,.]\\d+)*(?:\\.\\d{2})?)",
+            "₹\\s*(\\d+(?:[,.]\\d+)*(?:\\.\\d{2})?)",
+            "INR\\s*(\\d+(?:[,.]\\d+)*(?:\\.\\d{2})?)",
+            "amount\\s+Rs\\.?\\s*(\\d+(?:[,.]\\d+)*(?:\\.\\d{2})?)",
+            "amount\\s+₹\\s*(\\d+(?:[,.]\\d+)*(?:\\.\\d{2})?)",
+            "of\\s+Rs\\.?\\s*(\\d+(?:[,.]\\d+)*(?:\\.\\d{2})?)",
+            "of\\s+₹\\s*(\\d+(?:[,.]\\d+)*(?:\\.\\d{2})?)"
         )
 
         for (pattern in patterns) {
             val regex = Regex(pattern, RegexOption.IGNORE_CASE)
             val match = regex.find(message)
             if (match != null) {
-                return match.groupValues[1]
+                val amount = match.groupValues[1].replace(",", "")
+                Log.d("SmsHelper", "Found amount: $amount using pattern: $pattern")
+                return amount
             }
         }
+        Log.w("SmsHelper", "No amount found in message")
         return ""
     }
 
     private fun extractReceiver(message: String): String {
-        // Common patterns for receiver names in UPI messages
+        // Enhanced patterns for receiver names in UPI messages based on actual format
         val patterns = listOf(
-            "to\\s+([A-Za-z\\s]+)\\s+on",
-            "sent to\\s+([A-Za-z\\s]+)",
-            "paid to\\s+([A-Za-z\\s]+)",
-            "transferred to\\s+([A-Za-z\\s]+)",
-            "to\\s+([A-Za-z\\s]+)\\s+via"
+            // Pattern for "to stk-782780165@okbizaxis" format
+            "to\\s+([A-Za-z0-9@.-]+)\\s+on",
+            // Pattern for "to coolboyjunny@axl on" format
+            "to\\s+([A-Za-z0-9@.-]+)\\s+on",
+            // Other common patterns
+            "sent to\\s+([A-Za-z0-9\\s@.-]+)",
+            "paid to\\s+([A-Za-z0-9\\s@.-]+)",
+            "transferred to\\s+([A-Za-z0-9\\s@.-]+)",
+            "to\\s+([A-Za-z0-9\\s@.-]+)\\s+via",
+            "to\\s+([A-Za-z0-9\\s@.-]+)\\s+UPI",
+            "VPA\\s+([A-Za-z0-9@.-]+)",
+            "UPI ID\\s+([A-Za-z0-9@.-]+)"
         )
 
         for (pattern in patterns) {
             val regex = Regex(pattern, RegexOption.IGNORE_CASE)
             val match = regex.find(message)
             if (match != null) {
-                return match.groupValues[1].trim()
+                val receiver = match.groupValues[1].trim()
+                Log.d("SmsHelper", "Found receiver: $receiver using pattern: $pattern")
+                return receiver
             }
         }
 
@@ -138,79 +169,88 @@ class SmsHelper(private val context: Context) {
                 val afterKeyword = message.substring(index + keyword.length)
                 val words = afterKeyword.split(" ")
                 if (words.isNotEmpty()) {
-                    return words[0].trim()
+                    val receiver = words[0].trim()
+                    Log.d("SmsHelper", "Found receiver (fallback): $receiver")
+                    return receiver
                 }
             }
         }
 
+        Log.w("SmsHelper", "No receiver found in message")
         return "Unknown"
     }
+
+    // Add these methods inside the SmsHelper class
 
     private fun extractBank(message: String): String {
-        // Common bank names in UPI messages
-        val banks = listOf(
-            "SBI", "HDFC", "ICICI", "Axis", "Kotak", "Yes Bank", "PNB",
-            "Bank of Baroda", "Canara", "Union Bank", "IDBI", "IndusInd",
-            "Paytm", "PhonePe", "GPay", "Google Pay", "BHIM"
-        )
-
-        for (bank in banks) {
-            if (message.contains(bank, ignoreCase = true)) {
-                return bank
-            }
-        }
-
-        // Try to extract bank from UPI ID pattern
-        val upiPattern = Regex("@([a-zA-Z]+)", RegexOption.IGNORE_CASE)
-        val match = upiPattern.find(message)
-        if (match != null) {
-            return match.groupValues[1].uppercase()
-        }
-
-        return "Unknown"
-    }
-
-    private fun extractAccount(message: String): String {
-        // Pattern to match account numbers (typically 10-16 digits)
-        val accountPattern = Regex("a/c\\s*[x*]*\\s*(\\d{4,6})", RegexOption.IGNORE_CASE)
-        val match = accountPattern.find(message)
-        if (match != null) {
-            return "****" + match.groupValues[1]
-        }
-
-        // Look for masked account numbers
-        val maskedPattern = Regex("([x*]+\\d{4,6})", RegexOption.IGNORE_CASE)
-        val maskedMatch = maskedPattern.find(message)
-        if (maskedMatch != null) {
-            return maskedMatch.groupValues[1]
-        }
-
-        return "Unknown"
-    }
-
-    private fun extractUPIRef(message: String): String {
-        // Common UPI reference patterns
+        // Pattern for bank name like "Kotak Bank AC" or similar
         val patterns = listOf(
-            "UPI Ref No[.:]*\\s*([A-Za-z0-9]+)",
-            "UTR[.:]*\\s*([A-Za-z0-9]+)",
-            "Ref No[.:]*\\s*([A-Za-z0-9]+)",
-            "Reference[.:]*\\s*([A-Za-z0-9]+)",
-            "Transaction ID[.:]*\\s*([A-Za-z0-9]+)"
+            "from\\s+([A-Za-z\\s]+)\\s+AC",
+            "by\\s+([A-Za-z\\s]+)\\s+Bank",
+            "via\\s+([A-Za-z\\s]+)\\s+Bank"
         )
 
         for (pattern in patterns) {
             val regex = Regex(pattern, RegexOption.IGNORE_CASE)
             val match = regex.find(message)
             if (match != null) {
-                return match.groupValues[1]
+                val bank = match.groupValues[1].trim()
+                Log.d("SmsHelper", "Found bank: $bank using pattern: $pattern")
+                return bank
             }
         }
+        Log.w("SmsHelper", "No bank found in message")
+        return "Unknown"
+    }
 
+    private fun extractAccount(message: String): String {
+        // Pattern for account number or identifier like "X3957"
+        val patterns = listOf(
+            "from\\s+[A-Za-z\\s]+\\s+AC\\s+([A-Za-z0-9]+)",
+            "AC\\s+([A-Za-z0-9]+)"
+        )
+
+        for (pattern in patterns) {
+            val regex = Regex(pattern, RegexOption.IGNORE_CASE)
+            val match = regex.find(message)
+            if (match != null) {
+                val account = match.groupValues[1].trim()
+                Log.d("SmsHelper", "Found account: $account using pattern: $pattern")
+                return account
+            }
+        }
+        Log.w("SmsHelper", "No account found in message")
+        return "Unknown"
+    }
+
+    private fun extractUPIRef(message: String): String {
+        // Pattern for UPI Reference like "UPI Ref 547454447057" or "Ref 290667420543"
+        val patterns = listOf(
+            "UPI\\s+Ref\\s+(\\d+)",
+            "Ref\\s+(\\d+)",
+            "Reference\\s+(\\d+)"
+        )
+
+        for (pattern in patterns) {
+            val regex = Regex(pattern, RegexOption.IGNORE_CASE)
+            val match = regex.find(message)
+            if (match != null) {
+                val upiRefId = match.groupValues[1].trim()
+                Log.d("SmsHelper", "Found UPI Ref: $upiRefId using pattern: $pattern")
+                return upiRefId
+            }
+        }
+        Log.w("SmsHelper", "No UPI Ref found in message")
         return "Unknown"
     }
 
     private fun formatDate(dateMillis: Long): String {
-        val sdf = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
-        return sdf.format(Date(dateMillis))
+        // Convert timestamp to readable date format (e.g., "16-06-25")
+        val date = Date(dateMillis)
+        val formatter = SimpleDateFormat("dd-MM-yy", Locale.getDefault())
+        return formatter.format(date)
     }
+
+
+
 }
