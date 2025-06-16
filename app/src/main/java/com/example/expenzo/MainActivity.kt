@@ -8,8 +8,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 
 import android.content.pm.PackageManager
+import android.icu.util.Calendar
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -17,6 +23,7 @@ import android.view.View
 
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.example.expenzo.BackgroundServices.MyAlarmReceiver
 import com.example.expenzo.Model.TransactionDataModel
 
 import com.example.expenzo.Utils.BeautifulCircularProgressBar
@@ -44,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
+        scheduleAlarmFor1155PM()
         upiRefTextView = findViewById(R.id.upiRefTextView)
         circularProgressBar = findViewById(R.id.circularProgressBar)
 
@@ -180,4 +187,39 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    @SuppressLint("ScheduleExactAlarm")
+    fun scheduleAlarmFor1155PM(){
+        val intent = Intent(this, MyAlarmReceiver::class.java)
+        val pendingIntent= PendingIntent.getBroadcast(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val calender = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 55)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+
+            // If time already passed today, schedule for tomorrow
+            if (before(Calendar.getInstance())) {
+                add(Calendar.DATE, 1)
+            }
+        }
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP,
+            calender.timeInMillis,
+            pendingIntent
+        )
+
+        Log.d("MainActivity", "Alarm scheduled for: ${calender.time}")
+    }
+
+
 }
