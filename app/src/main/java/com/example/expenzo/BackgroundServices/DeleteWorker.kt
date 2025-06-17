@@ -18,19 +18,30 @@ class DeleteWorker(
             deleteDataFor1Day()
             Result.success()
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("DeleteWorker", "Exception in doWork: ${e.message}", e)
             Result.failure()
         }
     }
 
     private suspend fun deleteDataFor1Day() {
-        val repository = TransactionDeleteRepo()
-        val request = TransactionDeleteModel("684bbadc62bc05d171ab1175")
-        val response = repository.deleteTransactionApi(request)
-        if (response.isSuccessful) {
-            Log.d("DeleteWorker", "Delete successful: ${response.body()}")
-        } else {
-            Log.e("DeleteWorker", "Delete failed: ${response.errorBody()?.string()}")
+        try {
+            val repository = TransactionDeleteRepo()
+            val request = TransactionDeleteModel("684bbadc62bc05d171ab1175")
+
+            Log.d("DeleteWorker", "Making delete request for userId: ${request.userId}")
+
+            val response = repository.deleteTransactionApi(request)
+
+            if (response.isSuccessful) {
+                val body = response.body()
+                Log.d("DeleteWorker", "Delete successful: status=${body?.status}, message=${body?.message}, deletedCount=${body?.deletedCount}")
+            } else {
+                val errorBody = response.errorBody()?.string()
+                Log.e("DeleteWorker", "Delete failed: Code=${response.code()}, Error=$errorBody")
+            }
+        } catch (e: Exception) {
+            Log.e("DeleteWorker", "Network error: ${e.message}", e)
+            throw e
         }
     }
 }

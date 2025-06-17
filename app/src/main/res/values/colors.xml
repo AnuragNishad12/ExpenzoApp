@@ -4,6 +4,7 @@
     <color name="orange_secondary">#FF8C42</color>
     <color name="orange_light">#FFAD5A</color>
     <color name="orange_dark">#E55A2B</color>
+    <color name="black">#000000</color>
 
     <!-- Text Colors -->
     <color name="text_primary">#212121</color>
@@ -28,6 +29,14 @@
     <!-- Transparent Colors -->
     <color name="black_overlay">#80000000</color>
     <color name="white_overlay">#80FFFFFF</color>
+
+    <color name="nav_icon_color">#6366F1</color>
+    <color name="nav_text_color">#374151</color>
+    <color name="nav_item_selected">#F0F0FF</color>
+    <color name="nav_item_pressed">#E5E5E5</color>
+    <color name="primary_color">#6366F1</color>
+
+
 
     <declare-styleable name="OrangeProgressBar">
         <attr name="progressColor" format="color" />
