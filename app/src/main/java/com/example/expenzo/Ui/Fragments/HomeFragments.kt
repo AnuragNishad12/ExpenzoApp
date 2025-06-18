@@ -26,11 +26,15 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.expenzo.Adapter.TransactionAdapter
 import com.example.expenzo.BackgroundServices.MyAlarmReceiver
+import com.example.expenzo.Model.FetchCurrentDayDataModel
 import com.example.expenzo.R
 import com.example.expenzo.Utils.BeautifulCircularProgressBar
 import com.example.expenzo.Utils.SmsHelper
 import com.example.expenzo.Utils.StoredTransactionsHelper
+import com.example.expenzo.ViewModel.TransactionCurrentDayViewModel
 import com.example.expenzo.ViewModel.TrascationViewModel
 import com.example.expenzo.databinding.ActivityMainBinding
 import com.example.expenzo.databinding.FragmentHomeFragmentsBinding
@@ -45,6 +49,8 @@ class HomeFragments : Fragment() {
 
     private val SMS_PERMISSION_CODE = 101
     private lateinit var viewModel: TrascationViewModel
+    private lateinit var transVm : TransactionCurrentDayViewModel
+    private lateinit var transactionAdapter : TransactionAdapter
 
 
     override fun onCreateView(
@@ -79,6 +85,25 @@ class HomeFragments : Fragment() {
         } else {
             extractAndSendUPIRefs()
         }
+        transVm = ViewModelProvider(this)[TransactionCurrentDayViewModel::class.java]
+
+        binding.transactionRecycler.layoutManager = LinearLayoutManager(requireContext())
+
+        transVm.transactions.observe(viewLifecycleOwner) { transactionList ->
+            transactionAdapter = TransactionAdapter(transactionList)
+            binding.transactionRecycler.adapter = transactionAdapter
+        }
+
+
+        transVm.error.observe(viewLifecycleOwner) {
+            Log.d("UnkwonError","error ${it}")
+            Toast.makeText(requireContext(), it ?: "Unknown error", Toast.LENGTH_SHORT).show()
+        }
+
+        val request = FetchCurrentDayDataModel(userId = "684bbadc62bc05d171ab1175")
+        transVm.showTransactionCurrentDayVm(request)
+
+
 
 
         return binding.root

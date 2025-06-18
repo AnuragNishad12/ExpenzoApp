@@ -13,7 +13,7 @@ data class FetchCurrentDayDataResponse(
     val status: Boolean,
 
     @SerializedName("message")
-    val UserData: FetchOtherCurrentDataResponse
+    val UserData: List<FetchOtherCurrentDataResponse>
 )
 
 data class FetchOtherCurrentDataResponse(
