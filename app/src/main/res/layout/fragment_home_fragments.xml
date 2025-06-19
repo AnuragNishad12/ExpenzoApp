@@ -1,89 +1,1428 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Ui.Fragments.HomeFragments">
+    android:layout_height="wrap_content">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".Ui.Fragments.HomeFragments">
 
 
         <!-- Your Custom Circular Progress Bar -->
-    <com.example.expenzo.Utils.BeautifulCircularProgressBar
-        android:id="@+id/circularProgressBar"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="50dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Your existing UPI Text View -->
-    <TextView
-        android:id="@+id/upiRefTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#F5F5F5"
-        android:padding="16dp"
-        android:scrollbars="vertical"
-        android:textColor="#333333"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/circularProgressBar" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="260dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        <!--    <com.example.expenzo.Utils.BeautifulCircularProgressBar-->
+        <!--        android:id="@+id/circularProgressBar"-->
+        <!--        android:layout_width="50dp"-->
+        <!--        android:layout_height="50dp"-->
+        <!--        android:layout_marginTop="8dp"-->
+        <!--        android:visibility="gone"-->
+        <!--        app:layout_constraintBottom_toTopOf="@+id/textView4"-->
+        <!--        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--        app:layout_constraintHorizontal_bias="0.498"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:layout_constraintTop_toBottomOf="@+id/totalamountcurrent" />-->
 
-        <androidx.cardview.widget.CardView
+
+        <TextView
+            android:id="@+id/upiRefTextView"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="0dp"
-            app:cardMaxElevation="0dp">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="#F5F5F5"
+            android:padding="8dp"
+            android:scrollbars="vertical"
+            android:textColor="#333333"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+        <TextView
+            android:id="@+id/totalamountcurrent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/afacad"
+            android:gravity="center"
+            android:text="TextView"
+            android:textColor="#FF4F18"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="40dp"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="0dp"
+                app:cardMaxElevation="0dp">
 
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="Recent Transaction"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="20dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/transactionRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:fontFamily="@font/afacad"
+            android:text="Today's Total Spending"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/totalamountcurrent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--    <HorizontalScrollView-->
+        <!--        android:id="@+id/horizontalScrollView"-->
+        <!--        android:layout_width="0dp"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:layout_marginBottom="10dp"-->
+        <!--        app:layout_constraintBottom_toTopOf="@+id/upiRefTextView"-->
+        <!--        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--        app:layout_constraintStart_toStartOf="parent">-->
+
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:gravity="center"-->
+        <!--            android:orientation="horizontal"-->
+        <!--            android:padding="10dp">-->
+
+        <!--            &lt;!&ndash; Current Day Card &ndash;&gt;-->
+        <!--            <androidx.cardview.widget.CardView-->
+        <!--                android:id="@+id/currentDayCard"-->
+        <!--                android:layout_width="200dp"-->
+        <!--                android:layout_height="280dp"-->
+        <!--                app:cardCornerRadius="15dp"-->
+        <!--                app:cardElevation="4dp">-->
+
+        <!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="match_parent"-->
+        <!--                    android:padding="12dp">-->
+
+        <!--                    <View-->
+        <!--                        android:id="@+id/currentDayBg"-->
+        <!--                        android:layout_width="match_parent"-->
+        <!--                        android:layout_height="match_parent"-->
+        <!--                        android:background="@drawable/background_radius_corner"-->
+        <!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <!--                    &lt;!&ndash; Header &ndash;&gt;-->
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/currentDayTitle"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:fontFamily="@font/afacad"-->
+        <!--                        android:text="Current Day"-->
+        <!--                        android:textColor="#000000"-->
+        <!--                        android:textSize="18sp"-->
+        <!--                        android:textStyle="bold"-->
+        <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <!--                    &lt;!&ndash; Total Spending &ndash;&gt;-->
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/cdTotalSpendingLabel"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="16dp"-->
+        <!--                        android:text="Total Spent Today"-->
+        <!--                        android:textColor="#666666"-->
+        <!--                        android:textSize="12sp"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/currentDayTitle" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/cdTotalSpendingValue"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="₹246.20"-->
+        <!--                        android:textColor="#000000"-->
+        <!--                        android:textSize="16sp"-->
+        <!--                        android:textStyle="bold"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/cdTotalSpendingLabel" />-->
+
+        <!--                    &lt;!&ndash; Highest Transaction &ndash;&gt;-->
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/cdHighestTransactionLabel"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="12dp"-->
+        <!--                        android:text="Biggest Transaction"-->
+        <!--                        android:textColor="#666666"-->
+        <!--                        android:textSize="12sp"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/cdTotalSpendingValue" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/cdHighestTransactionValue"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="₹150.00"-->
+        <!--                        android:textColor="#000000"-->
+        <!--                        android:textSize="14sp"-->
+        <!--                        android:textStyle="bold"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/cdHighestTransactionLabel" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/cdHighestTransactionTo"-->
+        <!--                        android:layout_width="0dp"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="amazon@pay"-->
+        <!--                        android:textColor="#888888"-->
+        <!--                        android:textSize="10sp"-->
+        <!--                        android:ellipsize="end"-->
+        <!--                        android:maxLines="1"-->
+        <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/cdHighestTransactionValue" />-->
+
+        <!--                    &lt;!&ndash; Total Transactions &ndash;&gt;-->
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/cdTotalTransactionsLabel"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="12dp"-->
+        <!--                        android:text="Transactions Today"-->
+        <!--                        android:textColor="#666666"-->
+        <!--                        android:textSize="12sp"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/cdHighestTransactionTo" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/cdTotalTransactionsValue"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="6"-->
+        <!--                        android:textColor="#000000"-->
+        <!--                        android:textSize="14sp"-->
+        <!--                        android:textStyle="bold"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/cdTotalTransactionsLabel" />-->
+
+        <!--                    &lt;!&ndash; Most Frequent Receiver &ndash;&gt;-->
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/cdFrequentPayeeLabel"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="12dp"-->
+        <!--                        android:text="Most Frequent Payee"-->
+        <!--                        android:textColor="#666666"-->
+        <!--                        android:textSize="12sp"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/cdTotalTransactionsValue" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/cdFrequentPayeeValue"-->
+        <!--                        android:layout_width="0dp"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="paytm-67289527@ptybl"-->
+        <!--                        android:textColor="#000000"-->
+        <!--                        android:textSize="11sp"-->
+        <!--                        android:textStyle="bold"-->
+        <!--                        android:ellipsize="end"-->
+        <!--                        android:maxLines="1"-->
+        <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/cdFrequentPayeeLabel" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/cdFrequentPayeeAmount"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="Total: ₹320.00"-->
+        <!--                        android:textColor="#888888"-->
+        <!--                        android:textSize="10sp"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/cdFrequentPayeeValue" />-->
+
+        <!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
+        <!--            </androidx.cardview.widget.CardView>-->
+
+        <!--            &lt;!&ndash; 7 Days Card &ndash;&gt;-->
+        <!--            <androidx.cardview.widget.CardView-->
+        <!--                android:id="@+id/sevenDaysCard"-->
+        <!--                android:layout_width="200dp"-->
+        <!--                android:layout_height="280dp"-->
+        <!--                android:layout_marginLeft="10dp"-->
+        <!--                app:cardCornerRadius="15dp"-->
+        <!--                app:cardElevation="4dp">-->
+
+        <!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="match_parent"-->
+        <!--                    android:padding="12dp">-->
+
+        <!--                    <View-->
+        <!--                        android:id="@+id/sevenDaysBg"-->
+        <!--                        android:layout_width="match_parent"-->
+        <!--                        android:layout_height="match_parent"-->
+        <!--                        android:background="@drawable/background_radius_corner"-->
+        <!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <!--                    &lt;!&ndash; Header &ndash;&gt;-->
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/sevenDaysTitle"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:fontFamily="@font/afacad"-->
+        <!--                        android:text="7 Days"-->
+        <!--                        android:textColor="#000000"-->
+        <!--                        android:textSize="18sp"-->
+        <!--                        android:textStyle="bold"-->
+        <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <!--                    &lt;!&ndash; Total Spending &ndash;&gt;-->
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/sdTotalSpendingLabel"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="16dp"-->
+        <!--                        android:text="Total Spent (7 Days)"-->
+        <!--                        android:textColor="#666666"-->
+        <!--                        android:textSize="12sp"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/sevenDaysTitle" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/sdTotalSpendingValue"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="₹1,425.50"-->
+        <!--                        android:textColor="#000000"-->
+        <!--                        android:textSize="16sp"-->
+        <!--                        android:textStyle="bold"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/sdTotalSpendingLabel" />-->
+
+        <!--                    &lt;!&ndash; Highest Transaction &ndash;&gt;-->
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/sdHighestTransactionLabel"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="12dp"-->
+        <!--                        android:text="Biggest Transaction"-->
+        <!--                        android:textColor="#666666"-->
+        <!--                        android:textSize="12sp"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/sdTotalSpendingValue" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/sdHighestTransactionValue"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="₹500.00"-->
+        <!--                        android:textColor="#000000"-->
+        <!--                        android:textSize="14sp"-->
+        <!--                        android:textStyle="bold"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/sdHighestTransactionLabel" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/sdHighestTransactionTo"-->
+        <!--                        android:layout_width="0dp"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="flipkart@payments"-->
+        <!--                        android:textColor="#888888"-->
+        <!--                        android:textSize="10sp"-->
+        <!--                        android:ellipsize="end"-->
+        <!--                        android:maxLines="1"-->
+        <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/sdHighestTransactionValue" />-->
+
+        <!--                    &lt;!&ndash; Total Transactions &ndash;&gt;-->
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/sdTotalTransactionsLabel"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="12dp"-->
+        <!--                        android:text="Transactions (7 Days)"-->
+        <!--                        android:textColor="#666666"-->
+        <!--                        android:textSize="12sp"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/sdHighestTransactionTo" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/sdTotalTransactionsValue"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="23"-->
+        <!--                        android:textColor="#000000"-->
+        <!--                        android:textSize="14sp"-->
+        <!--                        android:textStyle="bold"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/sdTotalTransactionsLabel" />-->
+
+        <!--                    &lt;!&ndash; Most Frequent Receiver &ndash;&gt;-->
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/sdFrequentPayeeLabel"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="12dp"-->
+        <!--                        android:text="Most Frequent Payee"-->
+        <!--                        android:textColor="#666666"-->
+        <!--                        android:textSize="12sp"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/sdTotalTransactionsValue" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/sdFrequentPayeeValue"-->
+        <!--                        android:layout_width="0dp"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="swiggy@payments"-->
+        <!--                        android:textColor="#000000"-->
+        <!--                        android:textSize="11sp"-->
+        <!--                        android:textStyle="bold"-->
+        <!--                        android:ellipsize="end"-->
+        <!--                        android:maxLines="1"-->
+        <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/sdFrequentPayeeLabel" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/sdFrequentPayeeAmount"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="Total: ₹680.00"-->
+        <!--                        android:textColor="#888888"-->
+        <!--                        android:textSize="10sp"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/sdFrequentPayeeValue" />-->
+
+        <!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
+        <!--            </androidx.cardview.widget.CardView>-->
+
+        <!--            &lt;!&ndash; 30 Days Card &ndash;&gt;-->
+        <!--            <androidx.cardview.widget.CardView-->
+        <!--                android:id="@+id/thirtyDaysCard"-->
+        <!--                android:layout_width="200dp"-->
+        <!--                android:layout_height="280dp"-->
+        <!--                android:layout_marginLeft="10dp"-->
+        <!--                app:cardCornerRadius="15dp"-->
+        <!--                app:cardElevation="4dp">-->
+
+        <!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="match_parent"-->
+        <!--                    android:padding="12dp">-->
+
+        <!--                    <View-->
+        <!--                        android:id="@+id/thirtyDaysBg"-->
+        <!--                        android:layout_width="match_parent"-->
+        <!--                        android:layout_height="match_parent"-->
+        <!--                        android:background="@drawable/background_radius_corner"-->
+        <!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <!--                    &lt;!&ndash; Header &ndash;&gt;-->
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/thirtyDaysTitle"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:fontFamily="@font/afacad"-->
+        <!--                        android:text="30 Days"-->
+        <!--                        android:textColor="#000000"-->
+        <!--                        android:textSize="18sp"-->
+        <!--                        android:textStyle="bold"-->
+        <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <!--                    &lt;!&ndash; Total Spending &ndash;&gt;-->
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/tdTotalSpendingLabel"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="16dp"-->
+        <!--                        android:text="Total Spent (30 Days)"-->
+        <!--                        android:textColor="#666666"-->
+        <!--                        android:textSize="12sp"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/thirtyDaysTitle" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/tdTotalSpendingValue"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="₹8,750.25"-->
+        <!--                        android:textColor="#000000"-->
+        <!--                        android:textSize="16sp"-->
+        <!--                        android:textStyle="bold"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/tdTotalSpendingLabel" />-->
+
+        <!--                    &lt;!&ndash; Highest Transaction &ndash;&gt;-->
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/tdHighestTransactionLabel"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="12dp"-->
+        <!--                        android:text="Biggest Transaction"-->
+        <!--                        android:textColor="#666666"-->
+        <!--                        android:textSize="12sp"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/tdTotalSpendingValue" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/tdHighestTransactionValue"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="₹2,500.00"-->
+        <!--                        android:textColor="#000000"-->
+        <!--                        android:textSize="14sp"-->
+        <!--                        android:textStyle="bold"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/tdHighestTransactionLabel" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/tdHighestTransactionTo"-->
+        <!--                        android:layout_width="0dp"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="rent@landlord"-->
+        <!--                        android:textColor="#888888"-->
+        <!--                        android:textSize="10sp"-->
+        <!--                        android:ellipsize="end"-->
+        <!--                        android:maxLines="1"-->
+        <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/tdHighestTransactionValue" />-->
+
+        <!--                    &lt;!&ndash; Total Transactions &ndash;&gt;-->
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/tdTotalTransactionsLabel"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="12dp"-->
+        <!--                        android:text="Transactions (30 Days)"-->
+        <!--                        android:textColor="#666666"-->
+        <!--                        android:textSize="12sp"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/tdHighestTransactionTo" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/tdTotalTransactionsValue"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="89"-->
+        <!--                        android:textColor="#000000"-->
+        <!--                        android:textSize="14sp"-->
+        <!--                        android:textStyle="bold"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/tdTotalTransactionsLabel" />-->
+
+        <!--                    &lt;!&ndash; Most Frequent Receiver &ndash;&gt;-->
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/tdFrequentPayeeLabel"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="12dp"-->
+        <!--                        android:text="Most Frequent Payee"-->
+        <!--                        android:textColor="#666666"-->
+        <!--                        android:textSize="12sp"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/tdTotalTransactionsValue" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/tdFrequentPayeeValue"-->
+        <!--                        android:layout_width="0dp"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="grocerystore@upi"-->
+        <!--                        android:textColor="#000000"-->
+        <!--                        android:textSize="11sp"-->
+        <!--                        android:textStyle="bold"-->
+        <!--                        android:ellipsize="end"-->
+        <!--                        android:maxLines="1"-->
+        <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/tdFrequentPayeeLabel" />-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/tdFrequentPayeeAmount"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_marginTop="2dp"-->
+        <!--                        android:text="Total: ₹1,280.00"-->
+        <!--                        android:textColor="#888888"-->
+        <!--                        android:textSize="10sp"-->
+        <!--                        app:layout_constraintStart_toStartOf="parent"-->
+        <!--                        app:layout_constraintTop_toBottomOf="@+id/tdFrequentPayeeValue" />-->
+
+        <!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
+        <!--            </androidx.cardview.widget.CardView>-->
+
+        <!--        </LinearLayout>-->
+        <!--    </HorizontalScrollView>-->
+
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
+            android:layout_width="0dp"
+            android:layout_height="500dp"
+            android:layout_marginBottom="10dp"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toTopOf="@+id/upiRefTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <!-- Current Day Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/currentDayCard"
+                    android:layout_width="240dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="16dp"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="12dp"
+                    app:cardPreventCornerOverlap="true"
+                    app:cardUseCompatPadding="true">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <!-- Gradient Background -->
+                        <View
+                            android:id="@+id/currentDayBg"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/gradient_current_day"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <!-- Decorative Elements -->
+                        <View
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_marginTop="-20dp"
+                            android:layout_marginEnd="-20dp"
+                            android:alpha="0.1"
+                            android:background="@drawable/circle_decoration"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <!-- Content Container -->
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="24dp">
+
+                            <!-- Header with Icon -->
+                            <ImageView
+                                android:id="@+id/currentDayIcon"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_today"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:tint="#FFFFFF" />
+
+                            <TextView
+                                android:id="@+id/currentDayTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:fontFamily="@font/afacad_bold"
+                                android:letterSpacing="0.02"
+                                android:text="Today"
+                                android:textColor="#FFFFFF"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@+id/currentDayIcon"
+                                app:layout_constraintStart_toEndOf="@+id/currentDayIcon"
+                                app:layout_constraintTop_toTopOf="@+id/currentDayIcon" />
+
+                            <!-- Total Spending - Featured -->
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/totalSpendingCard"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="32dp"
+                                app:cardBackgroundColor="#40FFFFFF"
+                                app:cardCornerRadius="16dp"
+                                app:cardElevation="0dp"
+                                app:layout_constraintTop_toBottomOf="@+id/currentDayTitle">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="20dp">
+
+                                    <TextView
+                                        android:id="@+id/cdTotalSpendingValue"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/afacad_bold"
+                                        android:letterSpacing="-0.02"
+                                        android:text="₹246.2"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="24sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/cdTotalSpendingLabel"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:fontFamily="@font/afacad_medium"
+                                        android:text="Total Spent Today"
+                                        android:textColor="#E0FFFFFF"
+                                        android:textSize="14sp" />
+
+                                </LinearLayout>
+                            </androidx.cardview.widget.CardView>
+
+                            <!-- Stats Grid -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="24dp"
+                                android:divider="@drawable/divider_transparent"
+                                android:orientation="vertical"
+                                android:showDividers="middle"
+                                app:layout_constraintTop_toBottomOf="@+id/totalSpendingCard">
+
+                                <!-- Row 1: Biggest Transaction -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="16dp"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/cdHighestTransactionLabel"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/afacad_medium"
+                                        android:letterSpacing="0.1"
+                                        android:text="Biggest Transaction"
+                                        android:textAllCaps="true"
+                                        android:textColor="#B3FFFFFF"
+                                        android:textSize="12sp" />
+
+                                    <TextView
+                                        android:id="@+id/cdHighestTransactionValue"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:fontFamily="@font/afacad_bold"
+                                        android:text="₹150.00"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="18sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/cdHighestTransactionTo"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:ellipsize="end"
+                                        android:fontFamily="@font/afacad"
+                                        android:maxLines="1"
+                                        android:text="amazon@pay"
+                                        android:textColor="#CCFFFFFF"
+                                        android:textSize="13sp" />
+
+                                </LinearLayout>
+
+                                <!-- Row 2: Transactions Count and Frequent Payee -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <!-- Transactions Count -->
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="12dp"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:id="@+id/cdTotalTransactionsLabel"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:fontFamily="@font/afacad_medium"
+                                            android:letterSpacing="0.1"
+                                            android:text="Transactions"
+                                            android:textAllCaps="true"
+                                            android:textColor="#B3FFFFFF"
+                                            android:textSize="12sp" />
+
+                                        <TextView
+                                            android:id="@+id/cdTotalTransactionsValue"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="4dp"
+                                            android:fontFamily="@font/afacad_bold"
+                                            android:text="6"
+                                            android:textColor="#FFFFFF"
+                                            android:textSize="24sp"
+                                            android:textStyle="bold" />
+
+                                    </LinearLayout>
+
+                                    <!-- Most Frequent Payee -->
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="2"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:id="@+id/cdFrequentPayeeLabel"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:fontFamily="@font/afacad_medium"
+                                            android:letterSpacing="0.1"
+                                            android:text="Top Payee"
+                                            android:textAllCaps="true"
+                                            android:textColor="#B3FFFFFF"
+                                            android:textSize="12sp" />
+
+                                        <TextView
+                                            android:id="@+id/cdFrequentPayeeValue"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="4dp"
+                                            android:ellipsize="end"
+                                            android:fontFamily="@font/afacad_bold"
+                                            android:maxLines="1"
+                                            android:text="paytm-67289527@ptybl"
+                                            android:textColor="#FFFFFF"
+                                            android:textSize="14sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:id="@+id/cdFrequentPayeeAmount"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="2dp"
+                                            android:fontFamily="@font/afacad"
+                                            android:text="₹320.00"
+                                            android:textColor="#CCFFFFFF"
+                                            android:textSize="12sp" />
+
+                                    </LinearLayout>
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- 7 Days Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/sevenDaysCard"
+                    android:layout_width="240dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="Recent Transaction"
-                    android:textColor="#000000"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_marginEnd="16dp"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="12dp"
+                    app:cardPreventCornerOverlap="true"
+                    app:cardUseCompatPadding="true">
 
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="wrap_content"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <!-- Gradient Background -->
+                        <View
+                            android:id="@+id/sevenDaysBg"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/gradient_seven_days"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <!-- Decorative Elements -->
+                        <View
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:layout_marginTop="-30dp"
+                            android:layout_marginEnd="-30dp"
+                            android:alpha="0.08"
+                            android:background="@drawable/circle_decoration"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <!-- Content Container -->
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="24dp">
+
+                            <!-- Header with Icon -->
+                            <ImageView
+                                android:id="@+id/sevenDaysIcon"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_week"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:tint="#FFFFFF" />
+
+                            <TextView
+                                android:id="@+id/sevenDaysTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:fontFamily="@font/afacad_bold"
+                                android:letterSpacing="0.02"
+                                android:text="7 Days"
+                                android:textColor="#FFFFFF"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@+id/sevenDaysIcon"
+                                app:layout_constraintStart_toEndOf="@+id/sevenDaysIcon"
+                                app:layout_constraintTop_toTopOf="@+id/sevenDaysIcon" />
+
+                            <!-- Total Spending - Featured -->
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/sdTotalSpendingCard"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="32dp"
+                                app:cardBackgroundColor="#40FFFFFF"
+                                app:cardCornerRadius="16dp"
+                                app:cardElevation="0dp"
+                                app:layout_constraintTop_toBottomOf="@+id/sevenDaysTitle">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="20dp">
+
+                                    <TextView
+                                        android:id="@+id/sdTotalSpendingValue"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/afacad_bold"
+                                        android:letterSpacing="-0.02"
+                                        android:text="₹1,425.50"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="24sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/sdTotalSpendingLabel"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:fontFamily="@font/afacad_medium"
+                                        android:text="Weekly Spending"
+                                        android:textColor="#E0FFFFFF"
+                                        android:textSize="14sp" />
+
+                                </LinearLayout>
+                            </androidx.cardview.widget.CardView>
+
+                            <!-- Stats Grid -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="24dp"
+                                android:divider="@drawable/divider_transparent"
+                                android:orientation="vertical"
+                                android:showDividers="middle"
+                                app:layout_constraintTop_toBottomOf="@+id/sdTotalSpendingCard">
+
+                                <!-- Row 1: Biggest Transaction -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="16dp"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/sdHighestTransactionLabel"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/afacad_medium"
+                                        android:letterSpacing="0.1"
+                                        android:text="Biggest Transaction"
+                                        android:textAllCaps="true"
+                                        android:textColor="#B3FFFFFF"
+                                        android:textSize="12sp" />
+
+                                    <TextView
+                                        android:id="@+id/sdHighestTransactionValue"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:fontFamily="@font/afacad_bold"
+                                        android:text="₹500.00"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="18sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/sdHighestTransactionTo"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:ellipsize="end"
+                                        android:fontFamily="@font/afacad"
+                                        android:maxLines="1"
+                                        android:text="flipkart@payments"
+                                        android:textColor="#CCFFFFFF"
+                                        android:textSize="13sp" />
+
+                                </LinearLayout>
+
+                                <!-- Row 2: Transactions Count and Frequent Payee -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <!-- Transactions Count -->
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="12dp"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:id="@+id/sdTotalTransactionsLabel"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:fontFamily="@font/afacad_medium"
+                                            android:letterSpacing="0.1"
+                                            android:text="Transactions"
+                                            android:textAllCaps="true"
+                                            android:textColor="#B3FFFFFF"
+                                            android:textSize="12sp" />
+
+                                        <TextView
+                                            android:id="@+id/sdTotalTransactionsValue"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="4dp"
+                                            android:fontFamily="@font/afacad_bold"
+                                            android:text="23"
+                                            android:textColor="#FFFFFF"
+                                            android:textSize="24sp"
+                                            android:textStyle="bold" />
+
+                                    </LinearLayout>
+
+                                    <!-- Most Frequent Payee -->
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="2"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:id="@+id/sdFrequentPayeeLabel"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:fontFamily="@font/afacad_medium"
+                                            android:letterSpacing="0.1"
+                                            android:text="Top Payee"
+                                            android:textAllCaps="true"
+                                            android:textColor="#B3FFFFFF"
+                                            android:textSize="12sp" />
+
+                                        <TextView
+                                            android:id="@+id/sdFrequentPayeeValue"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="4dp"
+                                            android:ellipsize="end"
+                                            android:fontFamily="@font/afacad_bold"
+                                            android:maxLines="1"
+                                            android:text="swiggy@payments"
+                                            android:textColor="#FFFFFF"
+                                            android:textSize="14sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:id="@+id/sdFrequentPayeeAmount"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="2dp"
+                                            android:fontFamily="@font/afacad"
+                                            android:text="₹680.00"
+                                            android:textColor="#CCFFFFFF"
+                                            android:textSize="12sp" />
+
+                                    </LinearLayout>
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- 30 Days Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/thirtyDaysCard"
+                    android:layout_width="240dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:text="See all"
-                    android:textColor="#000000"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView3"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/textView3" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="12dp"
+                    app:cardPreventCornerOverlap="true"
+                    app:cardUseCompatPadding="true">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:id="@+id/transactionRecycler"
-            android:layout_height="match_parent" />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-    </LinearLayout>
+                        <!-- Gradient Background -->
+                        <View
+                            android:id="@+id/thirtyDaysBg"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/gradient_thirty_days"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <!-- Decorative Elements -->
+                        <View
+                            android:layout_width="140dp"
+                            android:layout_height="140dp"
+                            android:layout_marginTop="-40dp"
+                            android:layout_marginEnd="-40dp"
+                            android:alpha="0.06"
+                            android:background="@drawable/circle_decoration"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <!-- Content Container -->
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="24dp">
+
+                            <!-- Header with Icon -->
+                            <ImageView
+                                android:id="@+id/thirtyDaysIcon"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_month"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:tint="#FFFFFF" />
+
+                            <TextView
+                                android:id="@+id/thirtyDaysTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:fontFamily="@font/afacad_bold"
+                                android:letterSpacing="0.02"
+                                android:text="30 Days"
+                                android:textColor="#FFFFFF"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@+id/thirtyDaysIcon"
+                                app:layout_constraintStart_toEndOf="@+id/thirtyDaysIcon"
+                                app:layout_constraintTop_toTopOf="@+id/thirtyDaysIcon" />
+
+                            <!-- Total Spending - Featured -->
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/tdTotalSpendingCard"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="32dp"
+                                app:cardBackgroundColor="#40FFFFFF"
+                                app:cardCornerRadius="16dp"
+                                app:cardElevation="0dp"
+                                app:layout_constraintTop_toBottomOf="@+id/thirtyDaysTitle">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="20dp">
+
+                                    <TextView
+                                        android:id="@+id/tdTotalSpendingValue"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/afacad_bold"
+                                        android:letterSpacing="-0.02"
+                                        android:text="₹8,750.25"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="24sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/tdTotalSpendingLabel"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:fontFamily="@font/afacad_medium"
+                                        android:text="Monthly Spending"
+                                        android:textColor="#E0FFFFFF"
+                                        android:textSize="14sp" />
+
+                                </LinearLayout>
+                            </androidx.cardview.widget.CardView>
+
+                            <!-- Stats Grid -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="24dp"
+                                android:divider="@drawable/divider_transparent"
+                                android:orientation="vertical"
+                                android:showDividers="middle"
+                                app:layout_constraintTop_toBottomOf="@+id/tdTotalSpendingCard">
+
+                                <!-- Row 1: Biggest Transaction -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="16dp"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tdHighestTransactionLabel"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/afacad_medium"
+                                        android:letterSpacing="0.1"
+                                        android:text="Biggest Transaction"
+                                        android:textAllCaps="true"
+                                        android:textColor="#B3FFFFFF"
+                                        android:textSize="12sp" />
+
+                                    <TextView
+                                        android:id="@+id/tdHighestTransactionValue"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp"
+                                        android:fontFamily="@font/afacad_bold"
+                                        android:text="₹2,500.00"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="18sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/tdHighestTransactionTo"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:ellipsize="end"
+                                        android:fontFamily="@font/afacad"
+                                        android:maxLines="1"
+                                        android:text="rent@landlord"
+                                        android:textColor="#CCFFFFFF"
+                                        android:textSize="13sp" />
+
+                                </LinearLayout>
+
+                                <!-- Row 2: Transactions Count and Frequent Payee -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <!-- Transactions Count -->
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="12dp"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:id="@+id/tdTotalTransactionsValue"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="4dp"
+                                            android:fontFamily="@font/afacad_bold"
+                                            android:text="89"
+                                            android:textColor="#FFFFFF"
+                                            android:textSize="24sp"
+                                            android:textStyle="bold" />
+
+                                    </LinearLayout>
+
+                                    <!-- Most Frequent Payee -->
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="2"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:id="@+id/tdFrequentPayeeLabel"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:fontFamily="@font/afacad_medium"
+                                            android:letterSpacing="0.1"
+                                            android:text="Top Payee"
+                                            android:textAllCaps="true"
+                                            android:textColor="#B3FFFFFF"
+                                            android:textSize="12sp" />
+
+                                        <TextView
+                                            android:id="@+id/tdFrequentPayeeValue"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="4dp"
+                                            android:ellipsize="end"
+                                            android:fontFamily="@font/afacad_bold"
+                                            android:maxLines="1"
+                                            android:text="grocerystore@upi"
+                                            android:textColor="#FFFFFF"
+                                            android:textSize="14sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:id="@+id/tdFrequentPayeeAmount"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="2dp"
+                                            android:fontFamily="@font/afacad"
+                                            android:text="₹1,280.00"
+                                            android:textColor="#CCFFFFFF"
+                                            android:textSize="12sp" />
+
+                                    </LinearLayout>
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+        </HorizontalScrollView>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:text="Transaction Summary Cards"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
+            app:layout_constraintStart_toStartOf="@+id/horizontalScrollView"
+            app:layout_constraintTop_toBottomOf="@+id/totalamountcurrent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
+
+

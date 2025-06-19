@@ -5,6 +5,7 @@
     <color name="orange_light">#FFAD5A</color>
     <color name="orange_dark">#E55A2B</color>
     <color name="black">#000000</color>
+    <color name="lightGreen">#F5F5F5</color>
 
     <!-- Text Colors -->
     <color name="text_primary">#212121</color>
@@ -36,6 +37,33 @@
     <color name="nav_item_pressed">#E5E5E5</color>
     <color name="primary_color">#6366F1</color>
 
+
+    <color name="text_tertiary">#9CA3AF</color>
+    <color name="accent_color">#4F46E5</color>
+    <color name="secondary_color">#64748B</color>
+
+
+    <color name="nav_panel_background">#FFFFFF</color>
+
+    <color name="card_selected">#EBF4FF</color>
+    <color name="card_pressed">#DBEAFE</color>
+
+    <!-- Text Colors -->
+
+    <color name="text_active">#2563EB</color>
+
+    <!-- Border Colors -->
+
+    <color name="border_active">#2563EB</color>
+
+    <!-- Indicator Colors -->
+    <color name="indicator_active">#2563EB</color>
+    <color name="indicator_inactive">#E2E8F0</color>
+
+    <!-- Status Colors -->
+    <color name="success">#10B981</color>
+    <color name="warning">#F59E0B</color>
+    <color name="error">#EF4444</color>
 
 
     <declare-styleable name="OrangeProgressBar">

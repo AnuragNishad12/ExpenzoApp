@@ -4,25 +4,23 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.expenzo.Model.FetchCurrentDayDataModel
-import com.example.expenzo.Model.FetchCurrentDayDataResponse
-import com.example.expenzo.Model.FetchOtherCurrentDataResponse
-import com.example.expenzo.Repository.FetchAllCurrentDayDataRepo
+import com.example.expenzo.Model.FetchCurrentDayDataModel7days
+import com.example.expenzo.Model.FetchOtherCurrentDataResponse7days
+import com.example.expenzo.Repository.Fetch7DayDataRepo
 import kotlinx.coroutines.launch
 
+class Fetch7daysTransViewModel : ViewModel() {
 
-class TransactionCurrentDayViewModel : ViewModel() {
-
-    private val repository = FetchAllCurrentDayDataRepo()
+    private val repository = Fetch7DayDataRepo()
 
     val error = MutableLiveData<String?>()
-    val transactions = MutableLiveData<List<FetchOtherCurrentDataResponse>>()
+    val transactions = MutableLiveData<List<FetchOtherCurrentDataResponse7days>>()
     val totalAmount = MutableLiveData<Double>()
-    val highestTransaction = MutableLiveData<FetchOtherCurrentDataResponse?>()
+    val highestTransaction = MutableLiveData<FetchOtherCurrentDataResponse7days?>()
     val totalTransactionCount = MutableLiveData<Int>()
     val mostFrequentReceiver = MutableLiveData<Pair<String, Double>>() // Receiver, TotalSent
 
-    fun showTransactionCurrentDayVm(data: FetchCurrentDayDataModel) {
+    fun showTransaction7daysVm(data: FetchCurrentDayDataModel7days) {
         viewModelScope.launch {
             try {
                 val response = repository.fetchAllCurrentDayData(data)
