@@ -14,6 +14,7 @@ class UserDataStore(private val context: Context) {
 
    companion object{
        private val UNIQUE_NAME_KEY = stringPreferencesKey("unique_name")
+       private val UNIQUE_ALLDATA_KEY = stringPreferencesKey("alluserData")
    }
 
     suspend fun saveUniqueName(uniqueName: String) {
@@ -22,11 +23,35 @@ class UserDataStore(private val context: Context) {
         }
     }
 
+
     suspend fun getUniqueName(): String? {
         return context.dataStore.data
             .map { preferences -> preferences[UNIQUE_NAME_KEY] }
             .first()
     }
+
+    suspend fun saveALLuserData(name: String,password:String,email:String,uniqueName:String,MobileNumber:String){
+
+
+        val combinedData = listOf(name,password,email,uniqueName,MobileNumber).joinToString(",")
+        context.dataStore.edit { mydata ->{
+            mydata[UNIQUE_ALLDATA_KEY] = combinedData
+        }
+        }
+
+    }
+
+
+
+    suspend fun getAllUsersData(): List<String>?{
+        return context.dataStore.data
+            .map { response -> response[UNIQUE_ALLDATA_KEY] }.first()?.split(",")
+    }
+
+
+
+
+
 
 
 }
