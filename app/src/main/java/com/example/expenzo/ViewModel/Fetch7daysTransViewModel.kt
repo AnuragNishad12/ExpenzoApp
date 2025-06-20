@@ -20,6 +20,9 @@ class Fetch7daysTransViewModel : ViewModel() {
     val totalTransactionCount = MutableLiveData<Int>()
     val mostFrequentReceiver = MutableLiveData<Pair<String, Double>>() // Receiver, TotalSent
 
+    // ✅ NEW: Daily transaction totals with dates
+    val dailyTransactionTotals = MutableLiveData<List<Pair<String, Double>>>() // Date, Amount
+
     fun showTransaction7daysVm(data: FetchCurrentDayDataModel7days) {
         viewModelScope.launch {
             try {
@@ -51,7 +54,20 @@ class Fetch7daysTransViewModel : ViewModel() {
                         mostFrequentReceiver.postValue(Pair(it.key, it.value))
                     }
 
+                    // ✅ NEW: Calculate daily totals
+                    val dailyTotals = mutableMapOf<String, Double>()
+                    for (txn in userDataList) {
+                        val date = txn.Date ?: continue // Assuming your transaction has a Date field
+                        val amount = txn.Amount?.toDoubleOrNull() ?: 0.0
+                        dailyTotals[date] = dailyTotals.getOrDefault(date, 0.0) + amount
+                    }
+
+                    // Sort by date and convert to list of pairs
+                    val sortedDailyTotals = dailyTotals.toList().sortedBy { it.first }
+                    dailyTransactionTotals.postValue(sortedDailyTotals)
+
                     Log.d("Analytics", "Total = ₹$total, Max = ₹${maxTxn?.Amount}, Top Receiver = ${mostFrequent?.key}")
+                    Log.d("Analytics", "Daily Totals = $sortedDailyTotals")
                 } else {
                     error.postValue("Response failed with code: ${response.code()}")
                 }

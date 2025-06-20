@@ -28,12 +28,15 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.expenzo.Adapter.TransactionAdapter
+import com.example.expenzo.BackgroundServices.AlarmManager7days
 import com.example.expenzo.BackgroundServices.MyAlarmReceiver
 import com.example.expenzo.Model.FetchCurrentDayDataModel
+import com.example.expenzo.Model.FetchCurrentDayDataModel7days
 import com.example.expenzo.R
 import com.example.expenzo.Utils.BeautifulCircularProgressBar
 import com.example.expenzo.Utils.SmsHelper
 import com.example.expenzo.Utils.StoredTransactionsHelper
+import com.example.expenzo.ViewModel.Fetch7daysTransViewModel
 import com.example.expenzo.ViewModel.TransactionCurrentDayViewModel
 import com.example.expenzo.ViewModel.TrascationViewModel
 import com.example.expenzo.ViewModel.TrascationViewModel7days
@@ -53,6 +56,7 @@ class HomeFragments : Fragment() {
     private lateinit var transVm : TransactionCurrentDayViewModel
     private lateinit var transactionAdapter : TransactionAdapter
     private lateinit var viewModel7days : TrascationViewModel7days
+    private lateinit var days7viewModel : Fetch7daysTransViewModel
 
 
     override fun onCreateView(
@@ -64,7 +68,7 @@ class HomeFragments : Fragment() {
 
         viewModel = ViewModelProvider(this)[TrascationViewModel::class.java]
         viewModel7days = ViewModelProvider(this)[TrascationViewModel7days::class.java]
-
+        days7viewModel = ViewModelProvider(this)[Fetch7daysTransViewModel::class.java]
 //        upiRefTextView = findViewById(R.id.upiRefTextView)
 //        circularProgressBar = findViewById(R.id.circularProgressBar)
 
@@ -75,6 +79,7 @@ class HomeFragments : Fragment() {
 
         setupObservers()
         scheduleAlarmFor1155PM()
+        scheduleAlarmFor1205PM()
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_SMS)
             != PackageManager.PERMISSION_GRANTED
         ) {
@@ -111,6 +116,8 @@ class HomeFragments : Fragment() {
 
         val request = FetchCurrentDayDataModel(userId = "684bbadc62bc05d171ab1175")
         transVm.showTransactionCurrentDayVm(request)
+        val request7days = FetchCurrentDayDataModel7days(userId = "684bbadc62bc05d171ab1175")
+        days7viewModel.showTransaction7daysVm(request7days)
 
         transVm.totalAmount.observe(viewLifecycleOwner) {
             binding.cdTotalSpendingValue.text = "₹${it}"
@@ -127,11 +134,39 @@ class HomeFragments : Fragment() {
             binding.cdTotalTransactionsValue.text = "$it"
         }
 
-        transVm.mostFrequentReceiver.observe(viewLifecycleOwner) {
+
+
+        days7viewModel.mostFrequentReceiver.observe(viewLifecycleOwner) {
             val (receiver, totalSent) = it
             binding.cdFrequentPayeeValue.text = "$receiver"
             binding.cdFrequentPayeeAmount.text = "$totalSent"
         }
+
+        /*....................................7days.....................................*/
+
+        days7viewModel.totalAmount.observe(viewLifecycleOwner) {
+            binding.sdTotalSpendingValue.text = "₹${it}"
+        }
+
+        days7viewModel.highestTransaction.observe(viewLifecycleOwner) {
+            val name = it?.Receiver ?: "No Data"
+            val amount = it?.Amount ?: "0.00"
+            binding.sdHighestTransactionValue.text = "₹$amount"
+            binding.sdHighestTransactionTo.text = "$name"
+        }
+
+        days7viewModel.totalTransactionCount.observe(viewLifecycleOwner) {
+            binding.sdTotalTransactionsValue.text = "$it"
+        }
+
+        days7viewModel.mostFrequentReceiver.observe(viewLifecycleOwner) {
+            val (receiver, totalSent) = it
+            binding.sdFrequentPayeeValue.text = "$receiver"
+            binding.sdFrequentPayeeAmount.text = "$totalSent"
+        }
+
+        /*....................................7days.....................................*/
+
 
 
 
@@ -327,6 +362,59 @@ class HomeFragments : Fragment() {
                 }
             }
         }.start()
+    }
+
+
+
+    fun scheduleAlarmFor1205PM() {
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!alarmManager.canScheduleExactAlarms()) {
+
+                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                startActivity(intent)
+                Log.w("MainActivity", "Requesting permission to schedule exact alarms.")
+                return
+            }
+        }
+
+        val intent = Intent(requireActivity(), AlarmManager7days::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireActivity(),
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 55)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+
+
+            if (before(Calendar.getInstance())) {
+                add(Calendar.DATE, 1)
+            }
+        }
+
+//        val calendar = Calendar.getInstance().apply {
+//            timeInMillis = System.currentTimeMillis()
+//            add(Calendar.MINUTE, 1) // 1 minute from now
+//            set(Calendar.SECOND, 0)
+//            set(Calendar.MILLISECOND, 0)
+//        }
+
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            pendingIntent
+        )
+
+        Log.d("MainActivity", "Alarm scheduled for: ${calendar.time}")
     }
 
 

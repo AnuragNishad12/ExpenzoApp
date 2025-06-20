@@ -66,6 +66,21 @@
     <color name="error">#EF4444</color>
 
 
+
+    <!-- Primary Colors -->
+    <color name="primary_dark">#2C3E50</color>
+
+    <!-- Card Colors -->
+    <color name="card_primary">#3498DB</color>    <!-- Blue -->
+    <color name="card_secondary">#E74C3C</color>  <!-- Red -->
+    <color name="card_tertiary">#2ECC71</color>   <!-- Green -->
+    <color name="card_quaternary">#9B59B6</color> <!-- Purple -->
+
+    <!-- White variations -->
+
+    <color name="white_70">#B3FFFFFF</color>
+
+
     <declare-styleable name="OrangeProgressBar">
         <attr name="progressColor" format="color" />
         <attr name="trackColor" format="color" />

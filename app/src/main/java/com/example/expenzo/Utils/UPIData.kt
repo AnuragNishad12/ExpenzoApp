@@ -61,11 +61,12 @@ class SmsHelper(private val context: Context) {
         return results
     }
 
-    fun getStructuredUPIData7Days(userId: String, daysBack: Int = 3): List<TransactionDataModel7days> {
+
+    fun getStructuredUPIData7Days(userId: String, daysBack: Int = 7): List<TransactionDataModel7days> {
         val results = mutableListOf<TransactionDataModel7days>()
         val uri = Uri.parse("content://sms/inbox")
 
-        // Calculate start time: 3 days ago at 00:00:00
+        // Calculate start time: X days ago at 00:00:00
         val calendarStart = Calendar.getInstance()
         calendarStart.add(Calendar.DAY_OF_YEAR, -daysBack)
         calendarStart.set(Calendar.HOUR_OF_DAY, 0)
@@ -74,16 +75,21 @@ class SmsHelper(private val context: Context) {
         calendarStart.set(Calendar.MILLISECOND, 0)
         val startMillis = calendarStart.timeInMillis
 
-        // Calculate end time: yesterday at 23:59:59 (start of today)
+        // Calculate end time: yesterday at 23:59:59.999 (excludes current day completely)
         val calendarEnd = Calendar.getInstance()
-        calendarEnd.set(Calendar.HOUR_OF_DAY, 0)
-        calendarEnd.set(Calendar.MINUTE, 0)
-        calendarEnd.set(Calendar.SECOND, 0)
-        calendarEnd.set(Calendar.MILLISECOND, 0)
+        calendarEnd.add(Calendar.DAY_OF_YEAR, -1)  // Go back 1 day from today
+        calendarEnd.set(Calendar.HOUR_OF_DAY, 23)
+        calendarEnd.set(Calendar.MINUTE, 59)
+        calendarEnd.set(Calendar.SECOND, 59)
+        calendarEnd.set(Calendar.MILLISECOND, 999)
         val endMillis = calendarEnd.timeInMillis
 
+        // Debug logging for time boundaries
+        Log.d("SmsHelper", "Fetching SMS data from ${Date(startMillis)} to ${Date(endMillis)}")
+        Log.d("SmsHelper", "Start millis: $startMillis, End millis: $endMillis")
+
         val projection = arrayOf("body", "date")
-        val selection = "date >= ? AND date < ?"
+        val selection = "date >= ? AND date <= ?"  // Changed to <= since we're using precise end time
         val selectionArgs = arrayOf(startMillis.toString(), endMillis.toString())
 
         val cursor = context.contentResolver.query(
@@ -94,29 +100,41 @@ class SmsHelper(private val context: Context) {
             val bodyIndex = it.getColumnIndex("body")
             val dateIndex = it.getColumnIndex("date")
 
+            if (bodyIndex == -1 || dateIndex == -1) {
+                Log.e("SmsHelper", "Failed to get column indices for SMS data")
+                return results
+            }
+
+            var processedCount = 0
+            var upiCount = 0
+
             while (it.moveToNext()) {
                 val message = it.getString(bodyIndex)
                 val dateMillis = it.getLong(dateIndex)
+                processedCount++
 
-                Log.d("SmsHelper", "Processing SMS: $message")
+                Log.d("SmsHelper", "Processing SMS #$processedCount: Date=${Date(dateMillis)}")
+                Log.v("SmsHelper", "SMS Content: $message")
 
                 if (isUPIMessage(message)) {
+                    upiCount++
                     val upiData = parseUpiDataFromMessage7days(message, dateMillis, userId)
                     if (upiData != null) {
                         results.add(upiData)
-                        Log.d("SmsHelper", "Successfully parsed UPI data: $upiData")
+                        Log.d("SmsHelper", "Successfully parsed UPI data #${results.size}: $upiData")
                     } else {
                         Log.w("SmsHelper", "Failed to parse UPI data from message: $message")
                     }
                 }
             }
+
+            Log.i("SmsHelper", "SMS Processing Summary: Total SMS=$processedCount, UPI SMS=$upiCount, Parsed UPI=${results.size}")
+        } ?: run {
+            Log.e("SmsHelper", "Failed to query SMS content resolver")
         }
 
         return results
     }
-
-
-
 
 
 

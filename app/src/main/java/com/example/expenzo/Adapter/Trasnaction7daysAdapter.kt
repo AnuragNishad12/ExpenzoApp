@@ -14,14 +14,17 @@ class Trasnaction7daysAdapter(private val transactionList: List<FetchOtherCurren
     RecyclerView.Adapter<Trasnaction7daysAdapter.TransactionViewHolder>() {
 
     inner class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val amount = itemView.findViewById<TextView>(R.id.tvAmount)
-        val receiver = itemView.findViewById<TextView>(R.id.tvReceiver)
-        val date = itemView.findViewById<TextView>(R.id.tvDate)
+        val amount = itemView.findViewById<TextView>(R.id.tv_Amount)
+        val receiver = itemView.findViewById<TextView>(R.id.tv_Receiver)
+        val date = itemView.findViewById<TextView>(R.id.tv_Date)
+        val account = itemView.findViewById<TextView>(R.id.tv_Account)
+        val bank  = itemView.findViewById<TextView>(R.id.tv_Bank)
+        val UPIRefID = itemView.findViewById<TextView>(R.id.tv_UpiRef)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_transaction, parent, false)
+            .inflate(R.layout.items_transcation, parent, false)
         return TransactionViewHolder(view)
     }
 
@@ -30,6 +33,9 @@ class Trasnaction7daysAdapter(private val transactionList: List<FetchOtherCurren
         holder.amount.text = transaction.Amount
         holder.receiver.text = transaction.Receiver
         holder.date.text = transaction.Date
+        holder.bank.text = transaction.bank
+        holder.account.text = transaction.account
+        holder.UPIRefID.text = transaction.UPIRefID
     }
 
     override fun getItemCount(): Int = transactionList.size
