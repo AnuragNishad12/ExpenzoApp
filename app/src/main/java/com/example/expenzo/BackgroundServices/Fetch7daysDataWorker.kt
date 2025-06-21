@@ -20,28 +20,39 @@ class Fetch7daysDataWorker(
             val userId = "684bbadc62bc05d171ab1175"
             val allTransactions = smsHelper.getStructuredUPIData7Days(userId)
 
-            Log.d("Worker", "Total transactions found: ${allTransactions.size}")
+            Log.d("Worker7days", "Total transactions found: ${allTransactions.size}")
 
-            val newTransactions = allTransactions.filter { transaction ->
+            // Filter out transactions with valid UPI Ref IDs first, then check if they're already stored
+            val validTransactions = allTransactions.filter { transaction ->
+                transaction.upiRefId != "Unknown" && transaction.upiRefId.isNotBlank()
+            }
+
+            Log.d("Worker7days", "Valid transactions (with UPI Ref): ${validTransactions.size}")
+            Log.d("Worker7days", "Invalid transactions (Unknown UPI Ref): ${allTransactions.size - validTransactions.size}")
+
+            val newTransactions = validTransactions.filter { transaction ->
                 !storedHelper.isTransactionAlreadyStored(transaction.upiRefId)
             }
 
+            Log.d("Worker7days", "New transactions to process: ${newTransactions.size}")
+
+            var processedCount = 0
             newTransactions.forEach { transaction ->
-                if (transaction.upiRefId != "Unknown" && transaction.upiRefId.isNotBlank()) {
+                try {
                     TransactionRepository7days().sendingResponseToTranscationapi7days(transaction)
                     storedHelper.markTransactionAsStored(transaction.upiRefId)
-                    Log.d("Worker", "Processed transaction with UPI Ref: ${transaction.upiRefId}")
-                } else {
-                    Log.w("Worker", "Skipping invalid transaction: ${transaction.upiRefId}")
+                    processedCount++
+                    Log.d("Worker7days", "Processed transaction with UPI Ref: ${transaction.upiRefId}")
+                } catch (e: Exception) {
+                    Log.e("Worker7days", "Failed to process transaction ${transaction.upiRefId}", e)
                 }
             }
 
-            Log.d("Worker", "Finished processing ${newTransactions.size} new transactions")
+            Log.d("Worker7days", "Successfully processed $processedCount out of ${newTransactions.size} new transactions")
             Result.success()
         } catch (e: Exception) {
-            Log.e("WorkerError", "Failed to process transactions", e)
+            Log.e("Worker7days", "Failed to process transactions", e)
             Result.failure()
         }
     }
 }
-

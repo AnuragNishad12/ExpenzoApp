@@ -33,6 +33,13 @@ class StoredTransactionsHelper(private val context: Context) {
         }
 
         val storedRefs = getStoredUpiRefs().toMutableSet()
+
+        // Check if already exists to avoid unnecessary operations
+        if (storedRefs.contains(upiRefId)) {
+            Log.d("StoredTransactions", "UPI Ref already marked as stored: $upiRefId")
+            return
+        }
+
         storedRefs.add(upiRefId)
 
         // Keep only last 1000 transactions to prevent unlimited growth
@@ -40,6 +47,7 @@ class StoredTransactionsHelper(private val context: Context) {
             val sortedRefs = storedRefs.toList()
             storedRefs.clear()
             storedRefs.addAll(sortedRefs.takeLast(800)) // Keep last 800
+            Log.d("StoredTransactions", "Cleaned up stored refs, now contains ${storedRefs.size} entries")
         }
 
         saveStoredUpiRefs(storedRefs)
@@ -54,7 +62,12 @@ class StoredTransactionsHelper(private val context: Context) {
         return if (storedRefsString.isNullOrEmpty()) {
             emptySet()
         } else {
-            storedRefsString.split(",").toSet()
+            try {
+                storedRefsString.split(",").filter { it.isNotBlank() }.toSet()
+            } catch (e: Exception) {
+                Log.e("StoredTransactions", "Error parsing stored refs", e)
+                emptySet()
+            }
         }
     }
 
@@ -62,19 +75,27 @@ class StoredTransactionsHelper(private val context: Context) {
      * Save UPI reference IDs to SharedPreferences
      */
     private fun saveStoredUpiRefs(upiRefs: Set<String>) {
-        val editor = sharedPreferences.edit()
-        editor.putString(STORED_UPI_REFS_KEY, upiRefs.joinToString(","))
-        editor.apply()
+        try {
+            val editor = sharedPreferences.edit()
+            editor.putString(STORED_UPI_REFS_KEY, upiRefs.joinToString(","))
+            editor.apply()
+        } catch (e: Exception) {
+            Log.e("StoredTransactions", "Error saving stored refs", e)
+        }
     }
 
     /**
      * Clear all stored UPI reference IDs (useful for testing or reset)
      */
     fun clearAllStoredTransactions() {
-        val editor = sharedPreferences.edit()
-        editor.remove(STORED_UPI_REFS_KEY)
-        editor.apply()
-        Log.d("StoredTransactions", "Cleared all stored UPI references")
+        try {
+            val editor = sharedPreferences.edit()
+            editor.remove(STORED_UPI_REFS_KEY)
+            editor.apply()
+            Log.d("StoredTransactions", "Cleared all stored UPI references")
+        } catch (e: Exception) {
+            Log.e("StoredTransactions", "Error clearing stored refs", e)
+        }
     }
 
     /**
@@ -89,5 +110,15 @@ class StoredTransactionsHelper(private val context: Context) {
      */
     fun getAllStoredUpiRefs(): Set<String> {
         return getStoredUpiRefs()
+    }
+
+    /**
+     * Check if a batch of UPI refs are already stored (for bulk operations)
+     */
+    fun filterNewTransactions(upiRefs: List<String>): List<String> {
+        val storedRefs = getStoredUpiRefs()
+        return upiRefs.filter { upiRef ->
+            upiRef != "Unknown" && upiRef.isNotBlank() && !storedRefs.contains(upiRef)
+        }
     }
 }

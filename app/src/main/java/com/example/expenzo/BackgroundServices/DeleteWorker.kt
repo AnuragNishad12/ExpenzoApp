@@ -6,6 +6,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.expenzo.Model.TransactionDeleteModel
 import com.example.expenzo.Repository.TransactionDeleteRepo
+import com.example.expenzo.Utils.StoredTransactionsHelper
 
 
 class DeleteWorker(
@@ -27,12 +28,14 @@ class DeleteWorker(
         try {
             val repository = TransactionDeleteRepo()
             val request = TransactionDeleteModel("684bbadc62bc05d171ab1175")
+            val storedHelper = StoredTransactionsHelper(context = applicationContext)
 
             Log.d("DeleteWorker", "Making delete request for userId: ${request.userId}")
 
             val response = repository.deleteTransactionApi(request)
 
             if (response.isSuccessful) {
+                storedHelper.clearAllStoredTransactions();
                 val body = response.body()
                 Log.d("DeleteWorker", "Delete successful: status=${body?.status}, message=${body?.message}, deletedCount=${body?.deletedCount}")
             } else {

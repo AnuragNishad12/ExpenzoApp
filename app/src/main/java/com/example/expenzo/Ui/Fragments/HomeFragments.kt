@@ -375,7 +375,7 @@ class HomeFragments : Fragment() {
 
                 val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
                 startActivity(intent)
-                Log.w("MainActivity", "Requesting permission to schedule exact alarms.")
+                Log.w("MainActivityWorker7days", "Requesting permission to schedule exact alarms.")
                 return
             }
         }
@@ -400,7 +400,7 @@ class HomeFragments : Fragment() {
                 add(Calendar.DATE, 1)
             }
         }
-
+//
 //        val calendar = Calendar.getInstance().apply {
 //            timeInMillis = System.currentTimeMillis()
 //            add(Calendar.MINUTE, 1) // 1 minute from now
@@ -414,7 +414,7 @@ class HomeFragments : Fragment() {
             pendingIntent
         )
 
-        Log.d("MainActivity", "Alarm scheduled for: ${calendar.time}")
+        Log.d("MainActivityWorker7days", "Alarm scheduled for: ${calendar.time}")
     }
 
 
