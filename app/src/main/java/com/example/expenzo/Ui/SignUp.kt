@@ -1,5 +1,6 @@
 package com.example.expenzo.Ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.expenzo.MainActivity
 import com.example.expenzo.Model.Users
 import com.example.expenzo.R
 import com.example.expenzo.Utils.BeautifulCircularProgressBar
@@ -48,11 +50,18 @@ class SignUp : AppCompatActivity() {
             }, 100)
 
             val uniqueName = binding.uniqueName.text.toString()
+            val name = binding.fullName.text.toString()
+            val email = binding.emailaddress.text.toString()
+            val password = binding.password.text.toString()
+            val mobileNumber = binding.number.text.toString()
 
             // Save uniqueName to DataStore
             val userDataStore = UserDataStore(this)
             lifecycleScope.launch {
                 userDataStore.saveUniqueName(uniqueName)
+            }
+            lifecycleScope.launch {
+                userDataStore.saveALLuserData(name, password, email, uniqueName, mobileNumber)
             }
 
             val users = Users(
@@ -97,8 +106,8 @@ class SignUp : AppCompatActivity() {
             if (response != null && response.status) {
                 Toast.makeText(this, "Success: ${response.message}", Toast.LENGTH_SHORT).show()
                 // Navigate to next activity or finish
-                // Example: startActivity(Intent(this, MainActivity::class.java))
-                // finish()
+                 startActivity(Intent(this, MainActivity::class.java))
+                 finish()
             } else {
                 Toast.makeText(this, "Sign up failed!", Toast.LENGTH_SHORT).show()
             }

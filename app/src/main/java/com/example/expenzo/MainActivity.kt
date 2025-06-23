@@ -29,6 +29,7 @@ import com.example.expenzo.Model.TransactionDataModel
 import android.provider.Settings
 import com.example.expenzo.Ui.Fragments.AnalyticFragment
 import com.example.expenzo.Ui.Fragments.HomeFragments
+import com.example.expenzo.Ui.Fragments.ManyAnalyticsFragments
 import com.example.expenzo.Ui.Fragments.ProfileFragment
 import com.example.expenzo.Ui.Fragments.ReportFragment
 
@@ -68,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setOnItemSelectedListener { item ->
             val fragment = when (item.itemId) {
                 R.id.nav_home -> HomeFragments()
-                R.id.nav_analytics -> AnalyticFragment()
+                R.id.nav_analytics -> ManyAnalyticsFragments()
                 R.id.nav_report -> ReportFragment()
                 R.id.nav_profile -> ProfileFragment()
                 else -> null

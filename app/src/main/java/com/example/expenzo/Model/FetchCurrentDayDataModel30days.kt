@@ -3,7 +3,7 @@ package com.example.expenzo.Model
 import com.google.gson.annotations.SerializedName
 
 data class FetchCurrentDayDataModel30days(
-    @SerializedName("userId")
+    @SerializedName("uniqueName")
     val userId : String
 )
 

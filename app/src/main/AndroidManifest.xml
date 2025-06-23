@@ -11,8 +11,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
-
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -23,32 +21,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Expenzo"
         tools:targetApi="31">
-
-        <activity android:name=".Ui.SplashScreen"
-            android:exported="true">
-
-        </activity>
-
+        <activity
+            android:name=".Ui.Analytics30days"
+            android:exported="false" />
+        <activity
+            android:name=".Ui.Analytic7days"
+            android:exported="true" />
+        <activity
+            android:name=".Ui.SplashScreen"
+            android:exported="true" />
         <activity
             android:name=".Ui.SignUp"
-            android:exported="true">
-
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-
         </activity>
 
-        <receiver android:name=".BackgroundServices.MyAlarmReceiver" android:exported="true" />
-         <receiver android:name=".BackgroundServices.AlarmManager7days" android:exported="true"/>
+        <receiver
+            android:name=".BackgroundServices.MyAlarmReceiver"
+            android:exported="true" />
+        <receiver
+            android:name=".BackgroundServices.AlarmManager7days"
+            android:exported="true" />
 
         <meta-data
             android:name="preloaded_fonts"

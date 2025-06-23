@@ -21,6 +21,7 @@ class CheckUserViewModel : ViewModel(){
     val navigateToSignUpScreen = MutableLiveData<Boolean>()
 
 
+
     fun checkUserViewModel(data: CheckUserDataClass){
         viewModelScope.launch {
             try {
@@ -52,6 +53,7 @@ class CheckUserViewModel : ViewModel(){
                 val uniqueName = userDataStore.getUniqueName()
                 if (!uniqueName.isNullOrEmpty()) {
                     val data = CheckUserDataClass(uniqueInBody = uniqueName)
+
                     checkUserViewModel(data)
                 } else {
                     errorMessage.postValue("No unique name found in DataStore")

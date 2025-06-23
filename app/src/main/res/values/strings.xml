@@ -6,4 +6,12 @@
     <string name="analytics">Analytics</string>
     <string name="reports">Reports</string>
     <string name="profile">Profile</string>
+
+
+    <string name="title_7_days">7 Days Analytics</string>
+    <string name="subtitle_7_days">View insights for the past week Transaction</string>
+    <string name="desc_7_days_icon">Icon for 7 Days Analytics</string>
+    <string name="title_30_days">30 Days Analytics</string>
+    <string name="subtitle_30_days">Explore Transaction over the past month</string>
+    <string name="desc_30_days_icon">Icon for 30 Days Analytics</string>
 </resources>

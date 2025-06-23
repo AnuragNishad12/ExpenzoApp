@@ -15,6 +15,6 @@ data class TransactionDeleteResponse(
 
 // 2. Request Model (this looks correct)
 data class TransactionDeleteModel(
-    @SerializedName("userId")
+    @SerializedName("uniqueName")
     val userId: String
 )

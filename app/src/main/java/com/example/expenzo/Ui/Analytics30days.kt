@@ -1,92 +1,83 @@
-package com.example.expenzo.Ui.Fragments
+package com.example.expenzo.Ui
 
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.expenzo.Model.FetchCurrentDayDataModel30days
 import com.example.expenzo.Model.FetchCurrentDayDataModel7days
 import com.example.expenzo.R
 import com.example.expenzo.Utils.UserDataStore
+import com.example.expenzo.ViewModel.Fetch30daysTransViewModel
 import com.example.expenzo.ViewModel.Fetch7daysTransViewModel
-import com.example.expenzo.databinding.FragmentAnalyticBinding
-import com.example.expenzo.databinding.FragmentHomeFragmentsBinding
+import com.example.expenzo.databinding.ActivityAnalytics30daysBinding
 import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
+class Analytics30days : AppCompatActivity() {
 
-class AnalyticFragment : Fragment() {
+    private lateinit var binding: ActivityAnalytics30daysBinding
+    private lateinit var viewModel: Fetch30daysTransViewModel
 
-    private var _binding: FragmentAnalyticBinding? = null
-    private val binding get() = _binding!!
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    private lateinit var viewModel: Fetch7daysTransViewModel
+        binding = ActivityAnalytics30daysBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentAnalyticBinding.inflate(inflater, container, false)
-
-        // Initialize ViewModel
-        viewModel = ViewModelProvider(this)[Fetch7daysTransViewModel::class.java]
+        viewModel = ViewModelProvider(this)[Fetch30daysTransViewModel::class.java]
 
         setupObservers()
         setupBarChart()
 
-        val userDataStore = UserDataStore(requireContext())
+        val userDataStore = UserDataStore(this)
 
-        viewLifecycleOwner.lifecycleScope.launch {
+        lifecycleScope.launch {
             val userId = userDataStore.getUniqueName() ?: "default_user"
             // use uniqueName here
 
-            val fetchData = FetchCurrentDayDataModel7days(userId = userId) // Initialize with your required parameters
-            viewModel.showTransaction7daysVm(fetchData)
+            val fetchData = FetchCurrentDayDataModel30days(userId = userId) // Initialize with your required parameters
+            viewModel.showTransaction30daysVm(fetchData)
 
             Log.d("Fragment", "Unique Name: $userId")
         }
-        // Trigger data fetching - replace with your actual data model
 
 
-        return binding.root
+
     }
+
 
     private fun setupObservers() {
         // Observe daily transaction totals and update bar chart
-        viewModel.dailyTransactionTotals.observe(viewLifecycleOwner) { dailyTotals ->
+        viewModel.dailyTransactionTotals.observe(this) { dailyTotals ->
             Log.d("Analytics", "Observer triggered with data: $dailyTotals")
             updateBarChart(dailyTotals)
         }
 
         // Observe other data for displaying in cards
-        viewModel.totalAmount.observe(viewLifecycleOwner) { total ->
+        viewModel.totalAmount.observe(this) { total ->
             binding.tvTotalAmount.text = "₹${String.format("%.2f", total)}"
         }
 
-        viewModel.totalTransactionCount.observe(viewLifecycleOwner) { count ->
+        viewModel.totalTransactionCount.observe(this) { count ->
             binding.tvTransactionCount.text = count.toString()
         }
 
-        viewModel.highestTransaction.observe(viewLifecycleOwner) { highest ->
+        viewModel.highestTransaction.observe(this) { highest ->
             binding.tvHighestAmount.text = "₹${highest?.Amount ?: "0"}"
         }
 
-        viewModel.mostFrequentReceiver.observe(viewLifecycleOwner) { receiver ->
+        viewModel.mostFrequentReceiver.observe(this) { receiver ->
             binding.tvMostFrequentReceiver.text = receiver?.first ?: "N/A"
         }
     }
@@ -171,8 +162,7 @@ class AnalyticFragment : Fragment() {
         Log.d("Analytics", "Chart updated successfully with ${entries.size} entries")
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+
+
+
 }

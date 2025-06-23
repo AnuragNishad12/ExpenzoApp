@@ -81,6 +81,9 @@
     <color name="white_70">#B3FFFFFF</color>
 
 
+
+
+
     <declare-styleable name="OrangeProgressBar">
         <attr name="progressColor" format="color" />
         <attr name="trackColor" format="color" />

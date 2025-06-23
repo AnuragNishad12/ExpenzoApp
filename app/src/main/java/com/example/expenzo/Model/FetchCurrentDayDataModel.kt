@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 
 data class FetchCurrentDayDataModel(
-    @SerializedName("userId")
+    @SerializedName("uniqueName")
     val userId : String
 )
 

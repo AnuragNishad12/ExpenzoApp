@@ -8,15 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.expenzo.Adapter.TransactionAdapter
 import com.example.expenzo.Adapter.Trasnaction7daysAdapter
 import com.example.expenzo.Model.FetchCurrentDayDataModel
 import com.example.expenzo.Model.FetchCurrentDayDataModel7days
 import com.example.expenzo.R
+import com.example.expenzo.Utils.UserDataStore
 import com.example.expenzo.ViewModel.Fetch7daysTransViewModel
 import com.example.expenzo.databinding.FragmentHomeFragmentsBinding
 import com.example.expenzo.databinding.FragmentSevenDaysReportBinding
+import kotlinx.coroutines.launch
 
 
 class SevenDaysReportFragment : Fragment() {
@@ -57,8 +60,19 @@ class SevenDaysReportFragment : Fragment() {
 //            binding.progressBar.visibility = View.GONE
 //        }
 
-        val request = FetchCurrentDayDataModel7days(userId = "684bbadc62bc05d171ab1175")
-        viewmodel.showTransaction7daysVm(request)
+
+        val userDataStore = UserDataStore(requireContext())
+        viewLifecycleOwner.lifecycleScope.launch {
+            val userId = userDataStore.getUniqueName() ?: "default_user"
+            // use uniqueName here
+
+            val request = FetchCurrentDayDataModel7days(userId = userId)
+            viewmodel.showTransaction7daysVm(request)
+
+            Log.d("Fragment", "Unique Name: $userId")
+        }
+
+
 
 //        viewmodel.totalAmount.observe(viewLifecycleOwner) {
 //            binding.cdTotalSpendingValue.text = "₹${it}"

@@ -3,7 +3,7 @@ package com.example.expenzo.Model
 import com.google.gson.annotations.SerializedName
 
 data class TransactionDataModel7days(
-    @SerializedName("userId")
+    @SerializedName("userUniqueName")
     val userId:String,
 
     @SerializedName("Account")
