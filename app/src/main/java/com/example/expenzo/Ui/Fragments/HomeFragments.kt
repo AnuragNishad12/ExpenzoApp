@@ -29,6 +29,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.expenzo.Adapter.TransactionAdapter
+import com.example.expenzo.BackgroundServices.AlarmManager30days
 import com.example.expenzo.BackgroundServices.AlarmManager7days
 import com.example.expenzo.BackgroundServices.MyAlarmReceiver
 import com.example.expenzo.Model.FetchCurrentDayDataModel
@@ -90,6 +91,7 @@ class HomeFragments : Fragment() {
         setupObservers()
         scheduleAlarmFor1155PM()
         scheduleAlarmFor1205PM()
+        scheduleAlarmFor1205for30daysPM()
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_SMS)
             != PackageManager.PERMISSION_GRANTED
         ) {
@@ -550,6 +552,58 @@ class HomeFragments : Fragment() {
                 }
             }
         }
+    }
+
+
+    fun scheduleAlarmFor1205for30daysPM() {
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!alarmManager.canScheduleExactAlarms()) {
+
+                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                startActivity(intent)
+                Log.w("MainActivityWorker7days", "Requesting permission to schedule exact alarms.")
+                return
+            }
+        }
+
+        val intent = Intent(requireActivity(), AlarmManager30days::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireActivity(),
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 55)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+
+
+            if (before(Calendar.getInstance())) {
+                add(Calendar.DATE, 1)
+            }
+        }
+//
+//        val calendar = Calendar.getInstance().apply {
+//            timeInMillis = System.currentTimeMillis()
+//            add(Calendar.MINUTE, 1) // 1 minute from now
+//            set(Calendar.SECOND, 0)
+//            set(Calendar.MILLISECOND, 0)
+//        }
+
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            pendingIntent
+        )
+
+        Log.d("MainActivityWorker7days", "Alarm scheduled for: ${calendar.time}")
     }
 
 

@@ -4,11 +4,11 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.example.expenzo.Repository.TransactionRepository7days
+import com.example.expenzo.Repository.TransactionRepository30days
 import com.example.expenzo.Utils.SmsHelper
 import com.example.expenzo.Utils.UserDataStore
 
-class Fetch7daysDataWorker(
+class Fetch30daysDataWorker (
     context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
@@ -22,7 +22,7 @@ class Fetch7daysDataWorker(
             val userId = userDataStore.getUniqueName() ?: "default_user"
 
 //            val userId = "684bbadc62bc05d171ab1175"
-            val allTransactions = smsHelper.getStructuredUPIData7Days(userId)
+            val allTransactions = smsHelper.getStructuredUPIData30Days(userId)
 
             Log.d("Worker7days", "Total transactions found: ${allTransactions.size}")
 
@@ -44,7 +44,7 @@ class Fetch7daysDataWorker(
             validTransactions.forEach { transaction ->
                 try {
 //                    TransactionRepository().sendingResponseToTranscationapi(transaction)
-                    TransactionRepository7days().sendingResponseToTranscationapi7days(transaction)
+                    TransactionRepository30days().sendingResponseToTranscationapi30days(transaction)
 //                    storedHelper.markTransactionAsStored(transaction.upiRefId)
                     processedCount++
                     Log.d("Worker7days", "Processed transaction with UPI Ref: ${transaction.upiRefId}")
