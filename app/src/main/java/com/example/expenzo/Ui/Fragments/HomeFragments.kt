@@ -32,6 +32,7 @@ import com.example.expenzo.BackgroundServices.AlarmManager7days
 import com.example.expenzo.BackgroundServices.MyAlarmReceiver
 import com.example.expenzo.Model.FetchCurrentDayDataModel
 import com.example.expenzo.Model.FetchCurrentDayDataModel7days
+import com.example.expenzo.Model.TransactionDataModel30days
 import com.example.expenzo.R
 import com.example.expenzo.Utils.BeautifulCircularProgressBar
 import com.example.expenzo.Utils.SmsHelper
@@ -39,6 +40,7 @@ import com.example.expenzo.Utils.StoredTransactionsHelper
 import com.example.expenzo.ViewModel.Fetch7daysTransViewModel
 import com.example.expenzo.ViewModel.TransactionCurrentDayViewModel
 import com.example.expenzo.ViewModel.TrascationViewModel
+import com.example.expenzo.ViewModel.TrascationViewModel30days
 import com.example.expenzo.ViewModel.TrascationViewModel7days
 import com.example.expenzo.databinding.ActivityMainBinding
 import com.example.expenzo.databinding.FragmentHomeFragmentsBinding
@@ -56,6 +58,7 @@ class HomeFragments : Fragment() {
     private lateinit var transVm : TransactionCurrentDayViewModel
     private lateinit var transactionAdapter : TransactionAdapter
     private lateinit var viewModel7days : TrascationViewModel7days
+    private lateinit var viewModel30days : TrascationViewModel30days
     private lateinit var days7viewModel : Fetch7daysTransViewModel
 
 
@@ -69,6 +72,7 @@ class HomeFragments : Fragment() {
         viewModel = ViewModelProvider(this)[TrascationViewModel::class.java]
         viewModel7days = ViewModelProvider(this)[TrascationViewModel7days::class.java]
         days7viewModel = ViewModelProvider(this)[Fetch7daysTransViewModel::class.java]
+        viewModel30days = ViewModelProvider(this)[TrascationViewModel30days::class.java]
 //        upiRefTextView = findViewById(R.id.upiRefTextView)
 //        circularProgressBar = findViewById(R.id.circularProgressBar)
 
@@ -91,6 +95,7 @@ class HomeFragments : Fragment() {
         } else {
             extractAndSendUPIRefs()
             extractAndSendUPIRefs7days();
+            extractAndSendUPIRefs30days()
         }
         transVm = ViewModelProvider(this)[TransactionCurrentDayViewModel::class.java]
 
@@ -186,6 +191,7 @@ class HomeFragments : Fragment() {
         ) {
             extractAndSendUPIRefs()
             extractAndSendUPIRefs7days()
+            extractAndSendUPIRefs30days()
         } else {
             Toast.makeText(requireContext(), "Permission denied to read SMS", Toast.LENGTH_SHORT).show()
         }
@@ -492,8 +498,111 @@ class HomeFragments : Fragment() {
         Log.d("MainActivity", "Alarm scheduled for: ${calendar.time}")
     }
 
+    /*.............................30Days..............................*/
+
+    @SuppressLint("SuspiciousIndentation")
+    private fun extractAndSendUPIRefs30days() {
+//        binding.circularProgressBar.visibility = View.VISIBLE
+//        binding.circularProgressBar.setProgress(0f, animate = false)
+
+        Thread {
+            try {
+                val smsHelper = SmsHelper(requireContext())
+                val storedHelper = StoredTransactionsHelper(requireContext())
+
+                requireActivity().runOnUiThread {
+//                    binding.circularProgressBar.setProgress(30f, animate = true)
+                }
+
+                val userId = "684bbadc62bc05d171ab1175"
+                val allTransactions = smsHelper.getStructuredUPIData30Days(userId)
+                Log.d("TransactionDebug", "Total transactions found: ${allTransactions.size}")
+
+                // Log all transactions for debugging
+                allTransactions.forEachIndexed { index, transaction ->
+                    Log.d("TransactionDebug", "Transaction $index: UPI Ref: ${transaction.upiRefId}, Amount: ${transaction.amount}, Receiver: ${transaction.receiver}")
+                }
+
+
+                val newTransactions = allTransactions.filter { transaction ->
+                    val isStored = storedHelper.isTransactionAlreadyStored(transaction.upiRefId)
+                    Log.d("TransactionFilter", "UPI Ref ID: ${transaction.upiRefId}, Stored: $isStored")
+                    !isStored
+                }
+                Log.d("TransactionDebug", "New transactions: ${newTransactions.size}")
+
+                requireActivity().runOnUiThread {
+                    if (activity is AppCompatActivity && activity?.isFinishing != true) {
+//                        binding.circularProgressBar.setProgress(70f, animate = true)
+
+                        if (newTransactions.isNotEmpty()) {
+                            binding.upiRefTextView.text = "Found ${newTransactions.size} new UPI transactions"
+
+
+                            newTransactions.forEach { transaction ->
+                                Log.d("TransactionData", "Processing New Transaction: $transaction")
+
+
+                                if (transaction.upiRefId != "Unknown" && transaction.upiRefId.isNotBlank()) {
+                                    viewModel30days.transactionDataClass30days(transaction)
+                                    storedHelper.markTransactionAsStored(transaction.upiRefId)
+                                    Log.d("TransactionData", "Sent transaction with UPI Ref: ${transaction.upiRefId}")
+                                } else {
+                                    Log.w("TransactionData", "Skipping transaction with invalid UPI Ref: ${transaction.upiRefId}")
+                                }
+                            }
+//                            binding.circularProgressBar.setProgress(100f, animate = true)
+                        } else {
+                            binding.upiRefTextView.text = if (allTransactions.isEmpty()) {
+                                "No UPI transactions found in SMS"
+                            } else {
+                                "No new UPI transactions (${allTransactions.size} already processed)"
+                            }
+//                            binding.circularProgressBar.setProgress(100f, animate = true)
+                        }
+
+
+                        val storedCount = storedHelper.getStoredTransactionCount()
+                        Log.d("TransactionDebug", "Total stored transactions: $storedCount")
+
+                        Handler(Looper.getMainLooper()).postDelayed({
+
+                            if (activity is AppCompatActivity && activity?.isFinishing != true) {
+//                                binding.circularProgressBar.visibility = View.GONE
+                            }
+                        }, 2000)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("ThreadError", "Error in extractAndSendUPIRefs: ${e.message}", e)
+                requireActivity().runOnUiThread {
+
+                    if (activity is AppCompatActivity && activity?.isFinishing != true) {
+                        Toast.makeText(requireContext(), "Error processing SMS: ${e.message}", Toast.LENGTH_LONG).show()
+//                        binding.circularProgressBar.visibility = View.GONE
+                    }
+                }
+            }
+        }.start()
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    /*.............................30Days..............................*/
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }

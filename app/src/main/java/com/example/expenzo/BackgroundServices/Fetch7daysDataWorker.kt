@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.example.expenzo.Repository.TransactionRepository
 import com.example.expenzo.Repository.TransactionRepository7days
 import com.example.expenzo.Utils.SmsHelper
 import com.example.expenzo.Utils.StoredTransactionsHelper
@@ -39,6 +40,7 @@ class Fetch7daysDataWorker(
             var processedCount = 0
             newTransactions.forEach { transaction ->
                 try {
+//                    TransactionRepository().sendingResponseToTranscationapi(transaction)
                     TransactionRepository7days().sendingResponseToTranscationapi7days(transaction)
                     storedHelper.markTransactionAsStored(transaction.upiRefId)
                     processedCount++

@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.example.expenzo.Model.TransactionDataModel
+import com.example.expenzo.Model.TransactionDataModel30days
 import com.example.expenzo.Model.TransactionDataModel7days
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -137,6 +138,85 @@ class SmsHelper(private val context: Context) {
     }
 
 
+    fun getStructuredUPIData30Days(userId: String, skipRecentDays: Int = 8, totalDaysToFetch: Int = 30): List<TransactionDataModel30days> {
+        val results = mutableListOf<TransactionDataModel30days>()
+        val uri = Uri.parse("content://sms/inbox")
+
+        // Calculate start time: (skipRecentDays + totalDaysToFetch) days ago at 00:00:00
+        // Example: skip 8 recent days + fetch 30 days = go back 38 days total for start
+        val calendarStart = Calendar.getInstance()
+        calendarStart.add(Calendar.DAY_OF_YEAR, -(skipRecentDays + totalDaysToFetch))
+        calendarStart.set(Calendar.HOUR_OF_DAY, 0)
+        calendarStart.set(Calendar.MINUTE, 0)
+        calendarStart.set(Calendar.SECOND, 0)
+        calendarStart.set(Calendar.MILLISECOND, 0)
+        val startMillis = calendarStart.timeInMillis
+
+        // Calculate end time: skipRecentDays ago at 23:59:59.999
+        // Example: 8 days ago at end of day (excludes recent 8 days completely)
+        val calendarEnd = Calendar.getInstance()
+        calendarEnd.add(Calendar.DAY_OF_YEAR, -skipRecentDays)
+        calendarEnd.set(Calendar.HOUR_OF_DAY, 23)
+        calendarEnd.set(Calendar.MINUTE, 59)
+        calendarEnd.set(Calendar.SECOND, 59)
+        calendarEnd.set(Calendar.MILLISECOND, 999)
+        val endMillis = calendarEnd.timeInMillis
+
+        // Debug logging for time boundaries
+        Log.d("SmsHelper", "Skipping recent $skipRecentDays days, fetching $totalDaysToFetch days of data")
+        Log.d("SmsHelper", "Fetching SMS data from ${Date(startMillis)} to ${Date(endMillis)}")
+        Log.d("SmsHelper", "Start millis: $startMillis, End millis: $endMillis")
+
+        val projection = arrayOf("body", "date")
+        val selection = "date >= ? AND date <= ?"
+        val selectionArgs = arrayOf(startMillis.toString(), endMillis.toString())
+
+        val cursor = context.contentResolver.query(
+            uri, projection, selection, selectionArgs, "date DESC"
+        )
+
+        cursor?.use {
+            val bodyIndex = it.getColumnIndex("body")
+            val dateIndex = it.getColumnIndex("date")
+
+            if (bodyIndex == -1 || dateIndex == -1) {
+                Log.e("SmsHelper", "Failed to get column indices for SMS data")
+                return results
+            }
+
+            var processedCount = 0
+            var upiCount = 0
+
+            while (it.moveToNext()) {
+                val message = it.getString(bodyIndex)
+                val dateMillis = it.getLong(dateIndex)
+                processedCount++
+
+                Log.d("SmsHelper", "Processing SMS #$processedCount: Date=${Date(dateMillis)}")
+                Log.v("SmsHelper", "SMS Content: $message")
+
+                if (isUPIMessage(message)) {
+                    upiCount++
+                    val upiData = parseUpiDataFromMessage30days(message, dateMillis, userId)
+                    if (upiData != null) {
+                        results.add(upiData)
+                        Log.d("SmsHelper", "Successfully parsed UPI data #${results.size}: $upiData")
+                    } else {
+                        Log.w("SmsHelper", "Failed to parse UPI data from message: $message")
+                    }
+                }
+            }
+
+            Log.i("SmsHelper", "SMS Processing Summary: Total SMS=$processedCount, UPI SMS=$upiCount, Parsed UPI=${results.size}")
+            Log.i("SmsHelper", "Date range: Skipped recent $skipRecentDays days, fetched $totalDaysToFetch days of historical data")
+        } ?: run {
+            Log.e("SmsHelper", "Failed to query SMS content resolver")
+        }
+
+        return results
+    }
+
+
 
     private fun isUPIMessage(message: String): Boolean {
         val upiKeywords = listOf(
@@ -210,6 +290,47 @@ class SmsHelper(private val context: Context) {
 
             if (amount.isNotEmpty() && receiver.isNotEmpty()) {
                 TransactionDataModel7days(
+                    userId = userId,
+                    account = account,
+                    amount = amount,
+                    bank = bank,
+                    date = date,
+                    receiver = receiver,
+                    upiRefId = upiRefId
+                )
+            } else {
+                Log.w("SmsHelper", "Missing required fields - Amount: $amount, Receiver: $receiver")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("SmsHelper", "Error parsing UPI message: ${e.message}")
+            null
+        }
+    }
+
+
+    private fun parseUpiDataFromMessage30days(
+        message: String,
+        dateMillis: Long,
+        userId: String
+    ): TransactionDataModel30days? {
+        return try {
+            // Parse different UPI message formats
+            val amount = extractAmount(message)
+            val receiver = extractReceiver(message)
+            val bank = extractBank(message)
+            val account = extractAccount(message)
+            val upiRefId = extractUPIRef(message)
+            val date = formatDate(dateMillis)
+
+            // Log extracted data for debugging
+            Log.d(
+                "SmsHelper",
+                "Extracted - Amount: $amount, Receiver: $receiver, Bank: $bank, Account: $account, UPI Ref: $upiRefId"
+            )
+
+            if (amount.isNotEmpty() && receiver.isNotEmpty()) {
+                TransactionDataModel30days(
                     userId = userId,
                     account = account,
                     amount = amount,
