@@ -2,6 +2,7 @@ package com.example.expenzo.Repository
 
 import com.example.expenzo.Repository.Interfaces.ApiResponse
 import com.example.expenzo.Repository.Interfaces.ApiServiceCheckUser
+import com.example.expenzo.Repository.Interfaces.ApiServicesFetch30DayDataModel
 import com.example.expenzo.Repository.Interfaces.ApiServicesFetch7DayDataModel
 import com.example.expenzo.Repository.Interfaces.ApiServicesFetchCurrentDayDataModel
 import com.example.expenzo.Repository.Interfaces.TransactionApiService
@@ -75,6 +76,14 @@ object RetrofitClass {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(TransactionApiService30days::class.java)
+    }
+
+    val apiServicesFetch30days : ApiServicesFetch30DayDataModel by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiServicesFetch30DayDataModel::class.java)
     }
 
 

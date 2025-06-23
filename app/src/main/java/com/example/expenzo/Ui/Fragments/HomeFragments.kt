@@ -26,6 +26,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.expenzo.Adapter.TransactionAdapter
 import com.example.expenzo.BackgroundServices.AlarmManager7days
@@ -44,6 +45,8 @@ import com.example.expenzo.ViewModel.TrascationViewModel30days
 import com.example.expenzo.ViewModel.TrascationViewModel7days
 import com.example.expenzo.databinding.ActivityMainBinding
 import com.example.expenzo.databinding.FragmentHomeFragmentsBinding
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class HomeFragments : Fragment() {
@@ -93,9 +96,7 @@ class HomeFragments : Fragment() {
                 SMS_PERMISSION_CODE
             )
         } else {
-            extractAndSendUPIRefs()
-            extractAndSendUPIRefs7days();
-            extractAndSendUPIRefs30days()
+            startExtractProcess()
         }
         transVm = ViewModelProvider(this)[TransactionCurrentDayViewModel::class.java]
 
@@ -189,9 +190,7 @@ class HomeFragments : Fragment() {
         if (requestCode == SMS_PERMISSION_CODE && grantResults.isNotEmpty() &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
         ) {
-            extractAndSendUPIRefs()
-            extractAndSendUPIRefs7days()
-            extractAndSendUPIRefs30days()
+            startExtractProcess()
         } else {
             Toast.makeText(requireContext(), "Permission denied to read SMS", Toast.LENGTH_SHORT).show()
         }
@@ -598,6 +597,20 @@ class HomeFragments : Fragment() {
 
 
     /*.............................30Days..............................*/
+
+
+    fun startExtractProcess() {
+        lifecycleScope.launch {
+            extractAndSendUPIRefs()
+            delay(1500) // 1.5 seconds
+
+            extractAndSendUPIRefs7days()
+            delay(1500) // 1.5 seconds
+
+            extractAndSendUPIRefs30days()
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

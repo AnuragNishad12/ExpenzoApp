@@ -1,8 +1,7 @@
 package com.example.expenzo.Repository.Interfaces
 
-import com.example.expenzo.Model.FetchCurrentDayDataModel
+
 import com.example.expenzo.Model.FetchCurrentDayDataModel7days
-import com.example.expenzo.Model.FetchCurrentDayDataResponse
 import com.example.expenzo.Model.FetchCurrentDayDataResponse7days
 import retrofit2.Response
 import retrofit2.http.Body
