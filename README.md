@@ -37,7 +37,8 @@ Built-in analytics engine processes transaction data and presents meaningful ins
 
 | Home Screen | Transaction Summary | Analytics View |
 |-------------|---------------------|----------------|
-| ![home](screenshots/home.png) | ![summary](screenshots/summary.png) | ![graph](screenshots/graph.png) |
+| ![home](![image](https://github.com/user-attachments/assets/c00a961c-3bbe-41f1-a1af-723b22fc6060)
+) | ![summary](screenshots/summary.png) | ![graph](screenshots/graph.png) |
 
 ---
 
