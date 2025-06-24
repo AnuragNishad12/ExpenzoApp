@@ -35,7 +35,7 @@ Built-in analytics engine processes transaction data and presents meaningful ins
 
 *(Insert app screenshots here)*
 
-| Home Screen | Transaction Summary | Analytics View |
+| Home Screen | Analytics View | Report View |
 |-------------|---------------------|----------------|
 | ![Home Screen](https://github.com/user-attachments/assets/c00a961c-3bbe-41f1-a1af-723b22fc6060) | ![Transaction Summary](https://github.com/user-attachments/assets/e19ff653-0845-44bd-b3f4-cc745a733482) | ![Analytics View](https://github.com/user-attachments/assets/6dc3edf7-6357-4608-b8f0-02b4f6affc42) |
 
