@@ -37,9 +37,8 @@ Built-in analytics engine processes transaction data and presents meaningful ins
 
 | Home Screen | Transaction Summary | Analytics View |
 |-------------|---------------------|----------------|
-| ![home](![image](https://github.com/user-attachments/assets/c00a961c-3bbe-41f1-a1af-723b22fc6060)) | 
-![summary](![image](https://github.com/user-attachments/assets/e19ff653-0845-44bd-b3f4-cc745a733482)) |
-![graph](![image](https://github.com/user-attachments/assets/6dc3edf7-6357-4608-b8f0-02b4f6affc42)) |
+| ![Home Screen](https://github.com/user-attachments/assets/c00a961c-3bbe-41f1-a1af-723b22fc6060) | ![Transaction Summary](https://github.com/user-attachments/assets/e19ff653-0845-44bd-b3f4-cc745a733482) | ![Analytics View](https://github.com/user-attachments/assets/6dc3edf7-6357-4608-b8f0-02b4f6affc42) |
+
 
 ---
 
@@ -47,11 +46,11 @@ Built-in analytics engine processes transaction data and presents meaningful ins
 
 | Layer | Technologies Used |
 |-------|--------------------|
-| **Frontend** | Android (Java/Kotlin) or Flutter |
-| **Backend** | Firebase Realtime DB or MongoDB |
+| **Frontend** | Android (Kotlin)  |
+| **Backend** | AWS , Express, MongoDB |
 | **Data Processing** | Local Parsing + Server Sync |
-| **Analytics/Graphs** | MPAndroidChart / Charts for Flutter |
+| **Analytics/Graphs** | MPAndroidChart  |
 | **Authentication** | Firebase Auth / Device-Based Auth |
-| **APIs** | Custom APIs for transaction aggregation |
+| **APIs** | Custom APIs |
 
 ---
